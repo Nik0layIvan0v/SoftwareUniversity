@@ -21,7 +21,8 @@ namespace SUS.HTTP
 
             string[] headerLineParts = headerLine.Split(' ').ToArray();
 
-            this.Method = headerLineParts[0];
+            this.Method = Enum.Parse<HttpMethod>(headerLineParts[0], true);
+
             this.Path = headerLineParts[1];
 
             StringBuilder bodyBuilder = new StringBuilder();
@@ -50,12 +51,30 @@ namespace SUS.HTTP
                 }
             }
 
+            if (this.Headers.Any(header=>header.Name == HttpConstants.RequestCookieHeader))
+            {
+                string cookiesAsString =
+                    this.Headers.FirstOrDefault(x => x.Name == HttpConstants.RequestCookieHeader)?.Value;
+
+                string[] cookies = cookiesAsString
+                    ?.Split("; ", StringSplitOptions.RemoveEmptyEntries)
+                    .ToArray();
+
+                if (cookies != null)
+                {
+                    foreach (var currentCookieAsString in cookies)
+                    {
+                        this.Cookies.Add(new Cookie(currentCookieAsString));
+                    }
+                }
+            }
+
             this.RequestBody = bodyBuilder.ToString();
         }
 
         public string Path { get; set; }
 
-        public string Method { get; set; }
+        public HttpMethod Method { get; set; }
 
         public ICollection<Header> Headers { get; set; }
 
