@@ -9,10 +9,6 @@ namespace SUS.HTTP
 {
     public class HttpServer : IHttpServer
     {
-        private const int DefaultBufferSize = 4096;
-
-        private const int DefaultPortNumber = 80;
-
         private readonly IDictionary<string, Func<HttpRequest, HttpResponse>> routeTable;
 
         public HttpServer()
@@ -32,7 +28,7 @@ namespace SUS.HTTP
             this.routeTable[path] = action;
         }
 
-        public async Task StartAsync(int port = DefaultPortNumber)
+        public async Task StartAsync(int port = HttpConstants.DefaultPortNumber)
         {
             TcpListener tcpListener = new TcpListener(IPAddress.Loopback, port);
 
@@ -52,7 +48,7 @@ namespace SUS.HTTP
             {
                 int position = 0;
 
-                byte[] buffer = new byte[DefaultBufferSize];
+                byte[] buffer = new byte[HttpConstants.DefaultBufferSize];
 
                 List<byte> processData = new List<byte>();
 
@@ -78,7 +74,26 @@ namespace SUS.HTTP
                 string requestAsString = Encoding.UTF8.GetString(processData.ToArray());
 
                 Console.WriteLine(requestAsString);
+
+                HttpRequest request = new HttpRequest(requestAsString);
+
+                var responseHtml = "<h1>Welcome</h1>";
+
+                var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
+
+                var responseHttp = "http/1.1 200 OK" + HttpConstants.HttpNewLine
+                                                     + "Server: Sus server v1.0." + HttpConstants.HttpNewLine
+                                                     + "Content-Type: text/html" + HttpConstants.HttpNewLine
+                                                     + "Content-Length: " + responseBodyBytes.Length + HttpConstants.HttpNewLine + HttpConstants.HttpNewLine;
+
+                var responseHeaderBytes = Encoding.UTF8.GetBytes(responseHttp);
+
+                await stream.WriteAsync(responseHeaderBytes);
+
+                await stream.WriteAsync(responseBodyBytes);
             }
+
+            tcpClient.Close();
         }
     }
 }
