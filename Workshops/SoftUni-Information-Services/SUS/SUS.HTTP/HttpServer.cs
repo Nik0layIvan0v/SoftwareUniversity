@@ -73,25 +73,39 @@ namespace SUS.HTTP
                         processData.AddRange(buffer);
                     }
 
-                    string requestAsString = Encoding.UTF8.GetString(processData.ToArray());
+                    /* =====================================REQUEST============================================= */
 
+                    string requestAsString = Encoding.UTF8.GetString(processData.ToArray());
 
                     HttpRequest request = new HttpRequest(requestAsString);
 
                     Console.WriteLine($"{request.Method} => {request.Path} => {request.Headers.Count} Headers");
-                    Console.WriteLine(new string('=', 100));
-                    Console.WriteLine(requestAsString);
-                    /* ============================================================================================ */
 
-                    var responseHtml = "<h1>Welcome</h1>";
+                    /* ====================================RESPONSE============================================= */
 
-                    var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
+                    HttpResponse response;
 
-                    HttpResponse response = new HttpResponse("text/html", responseBodyBytes);
+                    if (this.routeTable.ContainsKey(request.Path))
+                    {
+                        Func<HttpRequest, HttpResponse> action = this.routeTable[request.Path];
 
-                    response.Headers.Add(new Header("Server", "Sus server v1.0."));
+                        response = action(request);
+                    }
+                    else
+                    {
+                        string responseHtml = "<h1>404 NOT FOUND (this.routeTable.ContainsKey(request.Path)</h1>";
 
-                    var responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
+                        byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
+
+                        response = new HttpResponse("text/html", responseBytes, HttpStatusCode.NotFound);
+                        //404 not found
+                    }
+
+                    response.Cookies.Add(new Cookie("SID", Guid.NewGuid().ToString()));
+
+                    byte[] responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
+
+                    /*===> Send data through network stream <===*/
 
                     await stream.WriteAsync(responseHeaderBytes);
 

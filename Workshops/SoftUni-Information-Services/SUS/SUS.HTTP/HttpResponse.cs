@@ -44,6 +44,12 @@ namespace SUS.HTTP
                 responseBuilder.Append(HttpConstants.HttpNewLine);
             }
 
+            foreach (var cookie in Cookies)
+            {
+                responseBuilder.Append("Set-Cookie: " + cookie.ToString());
+                responseBuilder.Append(HttpConstants.HttpNewLine);
+            }
+
             responseBuilder.Append(HttpConstants.HttpNewLine);
 
             return responseBuilder.ToString();
