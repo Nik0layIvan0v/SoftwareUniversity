@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SUS.HTTP;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using SUS.HTTP;
+using MyFirstMvcApp.Controllers;
 
 namespace MyFirstMvcApp
 {
@@ -12,44 +13,17 @@ namespace MyFirstMvcApp
         {
             IHttpServer sever = new HttpServer();
 
-            //1. Variant
-            sever.AddRoute("/about", (request) =>
-            {
-                string responseHtml = "<h1>sever.AddRoute(\" /about\", (request) =></h1>";
+            sever.AddRoute("/about", (request) => new HomeController().About(request));
 
-                byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
+            sever.AddRoute("/home", new HomeController().Index);
 
-                HttpResponse response = new HttpResponse("text/html", responseBytes);
+            sever.AddRoute("/", new HomeController().Index);
 
-                return response;
-            });
+            sever.AddRoute("/favicon.ico", (httpRequest) => new StaticFilesController().Favicon(httpRequest));
 
-            //2.Variant
-            sever.AddRoute("/home", HomePage);
-
-            sever.AddRoute("/", HomePage);
-
-            sever.AddRoute("/favicon.ico", (request) =>
-            {
-                byte[] faviconBytes = File.ReadAllBytes(@"wwwRoot/favicon.ico");
-
-                HttpResponse response = new HttpResponse("image/vnd.microsoft.icon", faviconBytes);
-
-                return response;
-            });
+            Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 
             await sever.StartAsync(80);
-        }
-
-        public static HttpResponse HomePage(HttpRequest request)
-        {
-            string responseHtml = "<h1>HomePage()</h1>";
-
-            byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
-
-            HttpResponse response = new HttpResponse("text/html", responseBytes);
-
-            return response;
         }
     }
 }
