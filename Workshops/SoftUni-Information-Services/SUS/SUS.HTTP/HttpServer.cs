@@ -93,7 +93,7 @@ namespace SUS.HTTP
                     }
                     else
                     {
-                        string responseHtml = "<h1>404 NOT FOUND (this.routeTable.ContainsKey(request.Path)</h1>";
+                        string responseHtml = "<h1>404 NOT FOUND (this.routeTable.ContainsKey(request.Path) returned false!</h1>";
 
                         byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
 

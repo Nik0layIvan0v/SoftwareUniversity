@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using SUS.HTTP;
@@ -25,6 +26,17 @@ namespace MyFirstMvcApp
 
             //2.Variant
             sever.AddRoute("/home", HomePage);
+
+            sever.AddRoute("/", HomePage);
+
+            sever.AddRoute("/favicon.ico", (request) =>
+            {
+                byte[] faviconBytes = File.ReadAllBytes(@"wwwRoot/favicon.ico");
+
+                HttpResponse response = new HttpResponse("image/vnd.microsoft.icon", faviconBytes);
+
+                return response;
+            });
 
             await sever.StartAsync(80);
         }

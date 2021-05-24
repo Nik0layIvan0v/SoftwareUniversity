@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,6 +8,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SUS\SUS.HTTP\SUS.HTTP.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwRoot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="wwwRoot\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
