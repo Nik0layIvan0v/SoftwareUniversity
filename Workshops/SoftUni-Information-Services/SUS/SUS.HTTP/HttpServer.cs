@@ -75,24 +75,27 @@ namespace SUS.HTTP
 
                     string requestAsString = Encoding.UTF8.GetString(processData.ToArray());
 
-                    Console.WriteLine(requestAsString);
 
                     HttpRequest request = new HttpRequest(requestAsString);
+
+                    Console.WriteLine($"{request.Method} => {request.Path} => {request.Headers.Count} Headers");
+                    Console.WriteLine(new string('=', 100));
+                    Console.WriteLine(requestAsString);
+                    /* ============================================================================================ */
 
                     var responseHtml = "<h1>Welcome</h1>";
 
                     var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
 
-                    var responseHttp = "http/1.1 200 OK" + HttpConstants.HttpNewLine
-                                                         + "Server: Sus server v1.0." + HttpConstants.HttpNewLine
-                                                         + "Content-Type: text/html" + HttpConstants.HttpNewLine
-                                                         + "Content-Length: " + responseBodyBytes.Length + HttpConstants.HttpNewLine + HttpConstants.HttpNewLine;
+                    HttpResponse response = new HttpResponse("text/html", responseBodyBytes);
 
-                    var responseHeaderBytes = Encoding.UTF8.GetBytes(responseHttp);
+                    response.Headers.Add(new Header("Server", "Sus server v1.0."));
+
+                    var responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
 
                     await stream.WriteAsync(responseHeaderBytes);
 
-                    await stream.WriteAsync(responseBodyBytes);
+                    await stream.WriteAsync(response.ResponseBody);
                 }
 
                 tcpClient.Close();

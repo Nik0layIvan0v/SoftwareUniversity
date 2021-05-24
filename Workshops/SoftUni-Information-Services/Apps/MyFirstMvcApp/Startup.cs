@@ -9,21 +9,21 @@ namespace MyFirstMvcApp
         {
             IHttpServer sever = new HttpServer();
 
-            //1. Variant
-            sever.AddRoute("/about", (request) =>
-            {
-                return new HttpResponse();
-            });
+            ////1. Variant
+            //sever.AddRoute("/about", (request) =>
+            //{
+            //    return new HttpResponse();
+            //});
 
             //2. Variant
-            sever.AddRoute("/home", HomePage);
+            //sever.AddRoute("/home", HomePage);
 
             await sever.StartAsync(80);
         }
 
-        public static HttpResponse HomePage(HttpRequest request)
-        {
-            return new HttpResponse();
-        }
+        //public static HttpResponse HomePage(HttpRequest request)
+        //{
+        //    return new HttpResponse();
+        //}
     }
 }
