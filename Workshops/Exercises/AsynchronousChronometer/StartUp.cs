@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Exercise.Chronometer.Contracts;
 
 namespace Exercise.Chronometer
 {
@@ -7,31 +8,31 @@ namespace Exercise.Chronometer
     {
         public static void Main()
         {
-            Chronometer chronometer = new Chronometer();
+            IChronometer chronometer = new ThreadChronometer();
 
             while (true)
             {
-                string test = Console.ReadLine();
+                string test = Console.ReadLine()?.ToLower();
 
                 switch (test)
                 {
-                    case "Start":
+                    case "start":
                         chronometer.Start();
                         break;
 
-                    case "Stop":
+                    case "stop":
                         chronometer.Stop();
                         break;
 
-                    case "Lap":
+                    case "lap":
                         Console.WriteLine(chronometer.Lap());
                         break;
 
-                    case "Time":
+                    case "time":
                         Console.WriteLine(chronometer.Time());
                         break;
 
-                    case "Laps":
+                    case "laps":
                         if (chronometer.Laps.Count == 0)
                         {
                             Console.WriteLine("Laps: no laps");
@@ -51,11 +52,11 @@ namespace Exercise.Chronometer
 
                         break;
 
-                    case "Reset":
+                    case "reset":
                         chronometer.Reset();
                         break;
 
-                    case "Exit":
+                    case "exit":
                         chronometer.Stop();
                         return;
                 }

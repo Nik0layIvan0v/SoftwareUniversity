@@ -15,5 +15,7 @@ namespace Exercise.Chronometer.Contracts
         string Lap();
 
         void Reset();
+
+        string Time();
     }
 }
