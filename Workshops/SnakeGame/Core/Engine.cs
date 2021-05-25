@@ -3,11 +3,13 @@ using SimpleSnake.GameObjects;
 using SimpleSnake.GameObjects.SnakeObject;
 using System;
 using System.Threading;
+using SimpleSnake.MusicPlayer;
 
 namespace SimpleSnake.Core
 {
     public class Engine : IEngine
     {
+        private readonly IPlayer player;
         private readonly Point[] pointsOfDirection;
         private readonly Wall wall;
         private readonly Food food;
@@ -17,6 +19,7 @@ namespace SimpleSnake.Core
 
         public Engine(Wall wall, Snake snake)
         {
+            this.player = new Player();
             this.wall = wall;
             this.snake = snake;
             this.sleepTime = 100;
@@ -100,6 +103,8 @@ namespace SimpleSnake.Core
 
         public void Run()
         {
+            player.PlayMusic();
+
             this.CreateDirections();
 
             while (true)
