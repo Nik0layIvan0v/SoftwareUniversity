@@ -21,6 +21,8 @@ namespace MyFirstMvcApp
 
             sever.AddRoute("/login", new UsersController().Login);
 
+            sever.AddRoute("/register", new UsersController().Register);
+
             Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 
             await sever.StartAsync(80);
