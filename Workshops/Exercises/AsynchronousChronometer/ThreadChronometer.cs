@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Exercise.Chronometer.Contracts;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Exercise.Chronometer.Contracts;
 
 namespace Exercise.Chronometer
 {
