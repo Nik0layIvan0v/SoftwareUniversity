@@ -1,9 +1,7 @@
-﻿using SUS.HTTP;
+﻿using MyFirstMvcApp.Controllers;
+using SUS.HTTP;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using MyFirstMvcApp.Controllers;
 
 namespace MyFirstMvcApp
 {
@@ -20,6 +18,8 @@ namespace MyFirstMvcApp
             sever.AddRoute("/", new HomeController().Index);
 
             sever.AddRoute("/favicon.ico", (httpRequest) => new StaticFilesController().Favicon(httpRequest));
+
+            sever.AddRoute("/login", new UsersController().Login);
 
             Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 

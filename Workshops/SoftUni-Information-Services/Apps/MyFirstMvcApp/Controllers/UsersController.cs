@@ -1,15 +1,16 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using SUS.HTTP;
+using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Controllers
 {
-    public class UsersController
+    public class UsersController : Controller
     {
         public HttpResponse Users(HttpRequest request)
         {
-            string responseHtml = "<h1>Users()</h1>";
-
-            byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
+            //=============BEFORE===========
+            byte[] responseBytes = Encoding.UTF8.GetBytes("<h1>Users()</h1>");
 
             HttpResponse response = new HttpResponse("text/html", responseBytes);
 
@@ -18,9 +19,8 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse Login(HttpRequest request)
         {
-            string responseHtml = "<h1>Login()</h1>";
-
-            byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
+            //=============AFTER============
+            byte[] responseBytes = File.ReadAllBytes(@"Views\Users\Login.html");
 
             HttpResponse response = new HttpResponse("text/html", responseBytes);
 
