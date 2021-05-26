@@ -16,8 +16,6 @@ namespace MyFirstMvcApp
             routeTable.Add(new Route("/home", new HomeController().Index));
             routeTable.Add(new Route("/", new HomeController().Index));
             routeTable.Add(new Route("/favicon.ico", (httpRequest) => new StaticFilesController().Favicon(httpRequest)));
-            routeTable.Add(new Route("/users/login", new UsersController().Login));
-            routeTable.Add(new Route("/users/register", new UsersController().Register));
             routeTable.Add(new Route("/login", new UsersController().Login));
             routeTable.Add(new Route("/register", new UsersController().Register));
 

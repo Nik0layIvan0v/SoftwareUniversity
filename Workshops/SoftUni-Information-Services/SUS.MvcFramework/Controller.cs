@@ -1,13 +1,16 @@
 ﻿using SUS.HTTP;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace SUS.MvcFramework
 {
     public abstract class Controller
     {
-        public HttpResponse View(string viewPath)
+        public HttpResponse View([CallerMemberName] string actionName = null)
         {
-            byte[] dataBytes = System.IO.File.ReadAllBytes(viewPath);
+            string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
+
+            byte[] dataBytes = System.IO.File.ReadAllBytes($"Views/{controllerName}/{actionName}.html");
 
             return new HttpResponse("text/html", dataBytes);
         }

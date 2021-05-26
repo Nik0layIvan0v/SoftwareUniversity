@@ -9,7 +9,6 @@ namespace MyFirstMvcApp.Controllers
     {
         public HttpResponse Users(HttpRequest request)
         {
-            //=============BEFORE===========
             byte[] responseBytes = Encoding.UTF8.GetBytes("<h1>Users()</h1>");
 
             HttpResponse response = new HttpResponse("text/html", responseBytes);
@@ -19,21 +18,12 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse Register(HttpRequest request)
         {
-            //=============BEFORE===========
-
-            byte[] responseBytes = System.IO.File.ReadAllBytes(@"Views\Users\Register.html");
-
-            HttpResponse response = new HttpResponse("text/html", responseBytes);
-
-            return response;
+            return this.View();
         }
 
         public HttpResponse Login(HttpRequest request)
         {
-            //=============AFTER============
-            return this.View(@"Views\Users\Login.html");
+            return this.View();
         }
-
-
     }
 }
