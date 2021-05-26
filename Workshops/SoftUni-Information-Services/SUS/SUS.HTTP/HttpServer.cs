@@ -1,31 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using SUS.MvcFramework;
 
 namespace SUS.HTTP
 {
     public class HttpServer : IHttpServer
     {
-        private Dictionary<string, Func<HttpRequest, HttpResponse>> routeTable;
+        private readonly ICollection<Route> routeTable;
 
-        public HttpServer()
+        public HttpServer(ICollection<Route> routes)
         {
-            this.routeTable = new Dictionary<string, Func<HttpRequest, HttpResponse>>();
-        }
-
-        public void AddRoute(string path, Func<HttpRequest, HttpResponse> action)
-        {
-            //TODO: Validate input for null values!;
-
-            if (!this.routeTable.ContainsKey(path))
-            {
-                this.routeTable.Add(path, null);
-            }
-
-            this.routeTable[path] = action;
+            this.routeTable = routes;
         }
 
         public async Task StartAsync(int port = HttpConstants.DefaultPortNumber)
@@ -85,20 +75,23 @@ namespace SUS.HTTP
 
                     HttpResponse response;
 
-                    if (this.routeTable.ContainsKey(request.Path))
+                    Route route = this.routeTable.FirstOrDefault(x => x.Path == request.Path);
+
+                    if (route != null)
                     {
-                        Func<HttpRequest, HttpResponse> action = this.routeTable[request.Path];
+                        Func<HttpRequest, HttpResponse> action = route.Action;
 
                         response = action(request);
                     }
                     else
                     {
+                        //DISPLAY PAGE NOT FOUND!
+
                         string responseHtml = "<h1>404 NOT FOUND (this.routeTable.ContainsKey(request.Path) returned false!</h1>";
 
                         byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
 
                         response = new HttpResponse("text/html", responseBytes, HttpStatusCode.NotFound);
-                        //404 not found
                     }
 
                     response.Cookies.Add(new Cookie("SID", Guid.NewGuid().ToString()));
