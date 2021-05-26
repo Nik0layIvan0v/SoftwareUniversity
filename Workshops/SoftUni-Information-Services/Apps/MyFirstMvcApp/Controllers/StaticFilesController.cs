@@ -1,5 +1,4 @@
 ﻿using SUS.HTTP;
-using System.IO;
 using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Controllers
@@ -8,11 +7,7 @@ namespace MyFirstMvcApp.Controllers
     {
         public HttpResponse Favicon(HttpRequest request)
         {
-            byte[] faviconBytes = File.ReadAllBytes(@"wwwRoot/favicon.ico");
-
-            HttpResponse response = new HttpResponse("image/vnd.microsoft.icon", faviconBytes);
-
-            return response;
+            return this.File("wwwRoot/favicon.ico", "image/vnd.microsoft.icon");
         }
     }
 }

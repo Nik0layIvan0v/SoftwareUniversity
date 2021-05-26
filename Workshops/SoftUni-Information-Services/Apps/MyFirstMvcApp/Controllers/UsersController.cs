@@ -21,7 +21,7 @@ namespace MyFirstMvcApp.Controllers
         {
             //=============BEFORE===========
 
-            byte[] responseBytes = File.ReadAllBytes(@"Views\Users\Register.html");
+            byte[] responseBytes = System.IO.File.ReadAllBytes(@"Views\Users\Register.html");
 
             HttpResponse response = new HttpResponse("text/html", responseBytes);
 
