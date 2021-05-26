@@ -4,6 +4,7 @@ using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Controllers
 {
+    //Other stuffs like about page (no logic)
     public class HomeController : Controller
     {
         public HttpResponse Index(HttpRequest request)

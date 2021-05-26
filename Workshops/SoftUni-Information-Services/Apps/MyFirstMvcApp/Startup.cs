@@ -1,7 +1,9 @@
-﻿using MyFirstMvcApp.Controllers;
+﻿using System.Collections.Generic;
+using MyFirstMvcApp.Controllers;
 using SUS.HTTP;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using SUS.MvcFramework;
 
 namespace MyFirstMvcApp
 {
@@ -9,23 +11,19 @@ namespace MyFirstMvcApp
     {
         public static async Task Main()
         {
-            IHttpServer sever = new HttpServer();
+            List<Route> routeTable = new List<Route>();
 
-            sever.AddRoute("/about", (request) => new HomeController().About(request));
-
-            sever.AddRoute("/home", new HomeController().Index);
-
-            sever.AddRoute("/", new HomeController().Index);
-
-            sever.AddRoute("/favicon.ico", (httpRequest) => new StaticFilesController().Favicon(httpRequest));
-
-            sever.AddRoute("/login", new UsersController().Login);
-
-            sever.AddRoute("/register", new UsersController().Register);
+            routeTable.Add(new Route("/about", (request) => new HomeController().About(request)));
+            routeTable.Add(new Route("/home", new HomeController().Index));
+            routeTable.Add(new Route("/", new HomeController().Index));
+            routeTable.Add(new Route("/favicon.ico", (httpRequest) => new StaticFilesController().Favicon(httpRequest)));
+            routeTable.Add(new Route("/login", new UsersController().Login));
+            routeTable.Add(new Route("/register", new UsersController().Register));
 
             Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 
-            await sever.StartAsync(80);
+            await Host.RunAsync(routeTable, 80);
+
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SUS.HTTP
 {
     public class HttpServer : IHttpServer
     {
-        private readonly IDictionary<string, Func<HttpRequest, HttpResponse>> routeTable;
+        private Dictionary<string, Func<HttpRequest, HttpResponse>> routeTable;
 
         public HttpServer()
         {
