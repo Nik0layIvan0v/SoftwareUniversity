@@ -1,6 +1,6 @@
 ﻿using SUS.HTTP;
-using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace SUS.MvcFramework
 {
@@ -10,7 +10,13 @@ namespace SUS.MvcFramework
         {
             string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
 
-            byte[] dataBytes = System.IO.File.ReadAllBytes($"Views/{controllerName}/{actionName}.html");
+            string viewContent = System.IO.File.ReadAllText($"Views/{controllerName}/{actionName}.html");
+
+            string layout = System.IO.File.ReadAllText("Views/Shared/_Layout.html");
+
+            string combinationLayoutAndViewContent = layout.Replace("@RenderBody()", viewContent);
+
+            byte[] dataBytes = Encoding.UTF8.GetBytes(combinationLayoutAndViewContent);
 
             return new HttpResponse("text/html", dataBytes);
         }
