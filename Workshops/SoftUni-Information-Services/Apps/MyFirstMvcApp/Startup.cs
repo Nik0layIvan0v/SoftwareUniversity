@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using MyFirstMvcApp.Controllers;
-using SUS.HTTP;
+﻿using MyFirstMvcApp.Controllers;
+using SUS.MvcFramework;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using SUS.MvcFramework;
 
 namespace MyFirstMvcApp
 {
