@@ -15,9 +15,20 @@ namespace MyFirstMvcApp
             routeTable.Add(new Route("/about", (request) => new HomeController().About(request)));
             routeTable.Add(new Route("/home", new HomeController().Index));
             routeTable.Add(new Route("/", new HomeController().Index));
-            routeTable.Add(new Route("/favicon.ico", (httpRequest) => new StaticFilesController().Favicon(httpRequest)));
             routeTable.Add(new Route("/login", new UsersController().Login));
             routeTable.Add(new Route("/register", new UsersController().Register));
+
+            routeTable.Add(new Route("/favicon.ico", (httpRequest) => 
+                new StaticFilesController().Favicon(httpRequest)));
+            routeTable.Add(new Route("/wwwRoot/js/popper.min.js", (httpRequest) => 
+                new StaticFilesController().Popper(httpRequest)));
+            routeTable.Add(new Route("/wwwRoot/css/bootstrap.min.css", (httpRequest) => 
+                new StaticFilesController().BootstrapCss(httpRequest)));
+            routeTable.Add(new Route("/wwwRoot/js/jquery-3.4.1.min.js", (httpRequest) => 
+                new StaticFilesController().Jquery(httpRequest)));
+            routeTable.Add(new Route("/wwwRoot/js/bootstrap.min.js", (httpRequest) => 
+                new StaticFilesController().BootstrapJs(httpRequest)));
+           
 
             Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 
