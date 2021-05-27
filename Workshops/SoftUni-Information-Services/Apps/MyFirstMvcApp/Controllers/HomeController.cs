@@ -1,5 +1,4 @@
-﻿using System.Text;
-using SUS.HTTP;
+﻿using SUS.HTTP;
 using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Controllers

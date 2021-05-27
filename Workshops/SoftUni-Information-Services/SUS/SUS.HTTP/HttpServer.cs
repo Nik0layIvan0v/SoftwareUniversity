@@ -86,12 +86,15 @@ namespace SUS.HTTP
                     else
                     {
                         //DISPLAY PAGE NOT FOUND!
+                        string layout = await System.IO.File.ReadAllTextAsync("Views/Shared/_Layout.html");
+                        
+                        string viewContent = await System.IO.File.ReadAllTextAsync("Views/Shared/ErrorView.html");
 
-                        string responseHtml = "<h1>404 NOT FOUND (this.routeTable.ContainsKey(request.Path) returned false!</h1>";
+                        string combinationLayoutAndViewContent = layout.Replace("@RenderBody()", viewContent);
 
-                        byte[] responseBytes = Encoding.UTF8.GetBytes(responseHtml);
+                        byte[] dataBytes = Encoding.UTF8.GetBytes(combinationLayoutAndViewContent);
 
-                        response = new HttpResponse("text/html", responseBytes, HttpStatusCode.NotFound);
+                        response = new HttpResponse("text/html", dataBytes, HttpStatusCode.NotFound);
                     }
 
                     response.Cookies.Add(new Cookie("SID", Guid.NewGuid().ToString()));
