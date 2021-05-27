@@ -69,7 +69,7 @@ namespace SUS.HTTP
 
                     HttpRequest request = new HttpRequest(requestAsString);
 
-                    Console.WriteLine($"{request.Method} => {request.Path} => {request.Headers.Count} Headers");
+                    Console.WriteLine($"Request: Method => {request.Method} Path => {request.Path} Count of Headers: {request.Headers.Count}");
 
                     /* ====================================RESPONSE============================================= */
 
@@ -85,7 +85,6 @@ namespace SUS.HTTP
                     }
                     else
                     {
-                        //DISPLAY PAGE NOT FOUND!
                         string layout = await System.IO.File.ReadAllTextAsync("Views/Shared/_Layout.html");
                         
                         string viewContent = await System.IO.File.ReadAllTextAsync("Views/Shared/ErrorView.html");
@@ -97,7 +96,14 @@ namespace SUS.HTTP
                         response = new HttpResponse("text/html", dataBytes, HttpStatusCode.NotFound);
                     }
 
-                    response.Cookies.Add(new Cookie("SID", Guid.NewGuid().ToString()));
+                    Cookie cookie = response.Cookies.FirstOrDefault(x => x.Name == "SID");
+
+                    if (cookie == null)
+                    {
+                        response.Cookies.Add(new Cookie("SID", Guid.NewGuid().ToString()));
+                    }
+                    
+                    Console.WriteLine($"Response: Status Code => {response.HttpStatusCode.ToString()} Path => {request.Path} Count of Headers: {request.Headers.Count}");
 
                     byte[] responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
 
