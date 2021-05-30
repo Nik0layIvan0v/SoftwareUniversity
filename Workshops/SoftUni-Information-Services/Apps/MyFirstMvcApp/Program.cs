@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using SUS.HTTP;
 using SUS.MvcFramework;
 
 namespace MyFirstMvcApp
@@ -10,7 +11,8 @@ namespace MyFirstMvcApp
         {
             Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
 
-            await Host.CreateHostAsync<Startup>();
+            //Port number is optional!
+            await Host.CreateHostAsync<Startup>(HttpConstants.DefaultPortNumber); 
         }
     }
 }
