@@ -1,6 +1,7 @@
 ﻿using MyFirstMvcApp.Controllers;
 using SUS.MvcFramework;
 using System.Collections.Generic;
+using SUS.HTTP;
 
 namespace MyFirstMvcApp
 {

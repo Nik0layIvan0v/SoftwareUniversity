@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using SUS.MvcFramework;
 
 namespace SUS.HTTP
 {
@@ -75,7 +74,8 @@ namespace SUS.HTTP
 
                     HttpResponse response;
 
-                    Route route = this.routeTable.FirstOrDefault(x=> string.Compare(x.Path,request.Path, true) == 0);
+                    Route route = this.routeTable.FirstOrDefault(x=> string.Compare(x.Path,request.Path, true) == 0
+                    && x.HttpMethod == request.Method);
 
                     if (route != null)
                     {
