@@ -1,4 +1,6 @@
-﻿using SUS.HTTP;
+﻿using System;
+using System.Linq;
+using SUS.HTTP;
 using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Controllers
@@ -7,6 +9,11 @@ namespace MyFirstMvcApp.Controllers
     {
         public HttpResponse Index(HttpRequest request)
         {
+            if (request.Headers.FirstOrDefault(x => x.Name == "ivan") != null)
+            {
+                Console.WriteLine("ivan is logged in the system.");
+            }
+
             return this.View();
         }
 

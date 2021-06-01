@@ -14,5 +14,16 @@ namespace MyFirstMvcApp.Controllers
         {
             return this.View();
         }
+
+        public HttpResponse LoginConfirmed(HttpRequest request)
+        {
+            //TODO: Read Data
+            //TODO: Check User
+            //TODO: Log User
+
+            //TODO: Redirect Home Page - DONE!!!
+
+            return this.Redirect("/");
+        }
     }
 }
