@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System.IO;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Reflection;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace SUS.MvcFramework.ViewEngine
 {
@@ -12,7 +16,7 @@ namespace SUS.MvcFramework.ViewEngine
             string csharpCode = GenerateCSharpFromTemplate(templateCode);
 
             //3. Executable obj must have GenerateHtml method witch parameter is the view model.
-            IView executableObj = GenerateExecutableCode(csharpCode);
+            IView executableObj = GenerateExecutableCode(csharpCode, viewModel);
 
             //4. Generated executable object call that method to generate actual ready HTML with filled data.
             string readyHtml = executableObj.GenerateHtml(viewModel);
@@ -46,22 +50,54 @@ namespace SUS.MvcFramework.ViewEngine
                                 }
                                 ";
 
-            string methodBody = GetMethodBody(template);
+            string methodBody = CreateGenerateHtmlMethodBody(template);
 
             string result = csharpCode.Replace(@"{methodBody}", methodBody);
 
             return result;
         }
 
-        private string GetMethodBody(string template)
+        private string CreateGenerateHtmlMethodBody(string template)
         {
-            throw new System.NotImplementedException();
+            return "";
         }
 
         //2. Get only compile part from the csharp code;
-        private IView GenerateExecutableCode(string csharpCode)
+        private IView GenerateExecutableCode(string csharpCode, object viewModel)
         {
-            throw new System.NotImplementedException();
+            CSharpCompilation compileResult = CSharpCompilation
+                .Create("ViewAssembly")
+                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddReferences(MetadataReference.CreateFromFile(typeof(IView).Assembly.Location));
+
+            AssemblyName[] libraries = Assembly.Load(new AssemblyName("netstandard")).GetReferencedAssemblies();
+
+            foreach (var library in libraries)
+            {
+                compileResult
+                    .AddReferences(MetadataReference.CreateFromFile(Assembly.Load(library).Location));
+            }
+
+            if (viewModel != null)
+            {
+                compileResult
+                    .AddReferences(MetadataReference.CreateFromFile(viewModel.GetType().Assembly.Location));
+            }
+
+            compileResult.AddSyntaxTrees(SyntaxFactory.ParseSyntaxTree(csharpCode));
+
+            using MemoryStream memoryStream = new MemoryStream();
+            
+            EmitResult emitResult = compileResult.Emit(memoryStream);
+
+            if (emitResult.Success == false)
+            {
+                //Compile Errors!!!
+                return null;
+            }
+
+            return null;
         }
     }
 }
