@@ -39,14 +39,6 @@ namespace SUS.MvcFramework.Tests
                 
             }
 
-            public TestViewModel(string name, decimal price, DateTime dateOfBirth)
-                :this()
-            {
-                Name = name;
-                Price = price;
-                DateOfBirth = dateOfBirth;
-            }
-
             public string Name { get; set; }
 
             public decimal Price { get; set; }

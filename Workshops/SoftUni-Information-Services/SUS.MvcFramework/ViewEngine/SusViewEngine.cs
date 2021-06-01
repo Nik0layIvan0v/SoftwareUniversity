@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Reflection;
@@ -27,12 +30,14 @@ namespace SUS.MvcFramework.ViewEngine
 
         private string GenerateCSharpFromTemplate(string template)
         {
+            string methodBody = CreateGenerateHtmlMethodBody(template);
+
             string csharpCode = @"
-                                using System
-                                using System.Text;
-                                using System.Linq
-                                using System.Collections.Generic;
-                                using SUS.MvcFramework.ViewEngine;
+                               using System;
+                               using System.Text;
+                               using System.Linq;
+                               using System.Collections.Generic;
+                               using SUS.MvcFramework.ViewEngine;
                                 
                                 namespace ViewNamespace
                                 {
@@ -41,20 +46,16 @@ namespace SUS.MvcFramework.ViewEngine
                                          public string GenerateHtml(object viewModel)
                                          {
                                             StringBuilder htmlBuilder = new StringBuilder();
-                                            
-                                            {methodBody}
+
+                                            " + methodBody + @"
 
                                             return htmlBuilder.ToString();
                                          }
-                                    {
+                                    }
                                 }
                                 ";
 
-            string methodBody = CreateGenerateHtmlMethodBody(template);
-
-            string result = csharpCode.Replace(@"{methodBody}", methodBody);
-
-            return result;
+            return csharpCode;
         }
 
         private string CreateGenerateHtmlMethodBody(string template)
@@ -71,33 +72,46 @@ namespace SUS.MvcFramework.ViewEngine
                 .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
                 .AddReferences(MetadataReference.CreateFromFile(typeof(IView).Assembly.Location));
 
+            if (viewModel != null)
+            {
+                compileResult = compileResult
+                    .AddReferences(MetadataReference.CreateFromFile(viewModel.GetType().Assembly.Location));
+            }
+
             AssemblyName[] libraries = Assembly.Load(new AssemblyName("netstandard")).GetReferencedAssemblies();
 
             foreach (var library in libraries)
             {
-                compileResult
+                compileResult = compileResult
                     .AddReferences(MetadataReference.CreateFromFile(Assembly.Load(library).Location));
             }
 
-            if (viewModel != null)
-            {
-                compileResult
-                    .AddReferences(MetadataReference.CreateFromFile(viewModel.GetType().Assembly.Location));
-            }
-
-            compileResult.AddSyntaxTrees(SyntaxFactory.ParseSyntaxTree(csharpCode));
+            compileResult = compileResult.AddSyntaxTrees(SyntaxFactory.ParseSyntaxTree(csharpCode));
 
             using MemoryStream memoryStream = new MemoryStream();
-            
+
             EmitResult emitResult = compileResult.Emit(memoryStream);
 
             if (emitResult.Success == false)
             {
-                //Compile Errors!!!
-                return null;
+                IEnumerable<string> errorList = emitResult.Diagnostics
+                    .Where(x => x.Severity == DiagnosticSeverity.Error)
+                    .Select(x => x.GetMessage());
+
+                return new ErrorView(errorList, csharpCode);
             }
 
-            return null;
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            byte[] rawAssembly = memoryStream.ToArray();
+
+            Assembly viewAssembly = Assembly.Load(rawAssembly);
+
+            Type viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
+
+            var instance = Activator.CreateInstance(viewType);
+
+            return instance as IView;
         }
     }
 }
