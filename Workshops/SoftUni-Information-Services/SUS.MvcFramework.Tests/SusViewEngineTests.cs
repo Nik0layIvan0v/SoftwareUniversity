@@ -1,19 +1,35 @@
 using System;
+using System.IO;
+using SUS.MvcFramework.ViewEngine;
 using Xunit;
 
 namespace SUS.MvcFramework.Tests
 {
-    public class UnitTest1
+    public class SusViewEngineTests
     {
-        [Fact]
-        public void Test1()
+        [Theory]
+        [InlineData("CleanHtml")]
+        [InlineData("Foreach")]
+        [InlineData("IfElseFor")]
+        [InlineData("ViewModel")]
+        public void TestGetHtml(string fileName)
         {
+            string templateCode = File.ReadAllText($"ViewTests/{fileName}.html");
+
             TestViewModel viewModel = new TestViewModel
             {
                 Name = "Dog go Argentina",
                 Price = 12345.6m,
                 DateOfBirth = new DateTime(2019, 6, 1)
             };
+
+            IViewEngine susViewEngine = new SusViewEngine();
+
+            string actualResult = susViewEngine.GetHtml(templateCode, viewModel);
+
+            string expectedResult = File.ReadAllText($"ViewTests/{fileName}.Result.html");
+
+            Assert.Equal(expectedResult, actualResult);
         }
 
         public class TestViewModel
