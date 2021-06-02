@@ -101,17 +101,29 @@ namespace SUS.MvcFramework.ViewEngine
                 return new ErrorView(errorList, csharpCode);
             }
 
-            memoryStream.Seek(0, SeekOrigin.Begin);
+            try
+            {
+                memoryStream.Seek(0, SeekOrigin.Begin);
 
-            byte[] rawAssembly = memoryStream.ToArray();
+                byte[] rawAssembly = memoryStream.ToArray();
 
-            Assembly viewAssembly = Assembly.Load(rawAssembly);
+                Assembly viewAssembly = Assembly.Load(rawAssembly);
 
-            Type viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
+                Type viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
 
-            var instance = Activator.CreateInstance(viewType);
+                var instance = Activator.CreateInstance(viewType);
 
-            return instance as IView;
+                return instance as IView;
+            }
+            catch (Exception exception)
+            {
+                IEnumerable<string> errorMessages = new List<string>
+                {
+                   exception.Message.ToString()
+                };
+
+                return new ErrorView(errorMessages, csharpCode );
+            }
         }
     }
 }
