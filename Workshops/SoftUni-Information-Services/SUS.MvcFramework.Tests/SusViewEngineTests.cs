@@ -30,6 +30,7 @@ namespace SUS.MvcFramework.Tests
             string expectedResult = File.ReadAllText($"ViewTests/{fileName}.Result.html");
 
             Assert.Equal(expectedResult, actualResult);
+
         }
 
         public class TestViewModel

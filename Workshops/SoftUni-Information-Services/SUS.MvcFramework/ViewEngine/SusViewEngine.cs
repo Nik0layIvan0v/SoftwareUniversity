@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Reflection;
+using System.Text;
 using Microsoft.CodeAnalysis.Emit;
 
 namespace SUS.MvcFramework.ViewEngine
@@ -30,7 +31,7 @@ namespace SUS.MvcFramework.ViewEngine
 
         private string GenerateCSharpFromTemplate(string template)
         {
-            string methodBody = CreateGenerateHtmlMethodBody(template);
+            string methodBody = GetMethodBody(template);
 
             string csharpCode = @"
                                using System;
@@ -45,11 +46,11 @@ namespace SUS.MvcFramework.ViewEngine
                                     {
                                          public string GenerateHtml(object viewModel)
                                          {
-                                            StringBuilder htmlBuilder = new StringBuilder();
+                                            StringBuilder result = new StringBuilder();
 
-                                            " + methodBody + @"
+                                            " + $"{methodBody}" + @"
 
-                                            return htmlBuilder.ToString();
+                                            return result.ToString().Trim();
                                          }
                                     }
                                 }
@@ -58,9 +59,28 @@ namespace SUS.MvcFramework.ViewEngine
             return csharpCode;
         }
 
-        private string CreateGenerateHtmlMethodBody(string template)
+        private string GetMethodBody(string template)
         {
-            return "";
+            StringReader reader = new StringReader(template);
+
+            StringBuilder builder = new StringBuilder();
+
+            while (true)
+            {
+                string currentLine = reader.ReadLine();
+
+                if (currentLine == null)
+                {
+                    break;
+                }
+
+                string escapedSymbolsLine = currentLine.Replace("\"", "\"\"");
+
+                builder.AppendLine($"result.AppendLine(@\"{escapedSymbolsLine}\");");
+
+            }
+
+            return builder.ToString();
         }
 
         //2. Get only compile part from the csharp code;
@@ -122,7 +142,7 @@ namespace SUS.MvcFramework.ViewEngine
                    exception.Message.ToString()
                 };
 
-                return new ErrorView(errorMessages, csharpCode );
+                return new ErrorView(errorMessages, csharpCode);
             }
         }
     }
