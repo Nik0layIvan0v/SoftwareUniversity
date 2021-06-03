@@ -37,7 +37,6 @@ namespace SUS.MvcFramework.Tests
         {
             public TestViewModel()
             {
-                
             }
 
             public string Name { get; set; }

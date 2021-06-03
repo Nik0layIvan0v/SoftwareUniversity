@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using System.Reflection;
 using System.Text;
-using Microsoft.CodeAnalysis.Emit;
+using System.Text.RegularExpressions;
 
 namespace SUS.MvcFramework.ViewEngine
 {
@@ -61,6 +62,11 @@ namespace SUS.MvcFramework.ViewEngine
 
         private string GetMethodBody(string template)
         {
+            ICollection<string> supportedOperations = new List<string>
+            {
+                "if","else","for","foreach","while"
+            };
+
             StringReader reader = new StringReader(template);
 
             StringBuilder builder = new StringBuilder();
@@ -74,13 +80,55 @@ namespace SUS.MvcFramework.ViewEngine
                     break;
                 }
 
-                string escapedSymbolsLine = currentLine.Replace("\"", "\"\"");
+                if (currentLine.TrimStart().StartsWith('@')
+                    && supportedOperations
+                        .Any(supportedOperator => currentLine.TrimStart().StartsWith("@" + supportedOperator)))
+                {
+                    int atSignIndex = currentLine.IndexOf('@');
 
-                builder.AppendLine($"result.AppendLine(@\"{escapedSymbolsLine}\");");
+                    currentLine = currentLine.Remove(atSignIndex, 1);
 
+                    builder.AppendLine(currentLine);
+                }
+                else if (currentLine.TrimStart().StartsWith('{') || currentLine.TrimStart().StartsWith('}'))
+                {
+                    builder.AppendLine(currentLine);
+                }
+                else
+                {
+                    Regex matchEndOfCSharpCode = new Regex(@"^[^\""\s&\'< \!]+");
+
+                    builder.Append($"result.AppendLine(@\""); // => result.AppendLine(@"
+
+                    while (currentLine.Contains('@'))
+                    {
+                        int atSignIndex = currentLine.IndexOf('@');
+
+                        string htmlBeforeAtSign = currentLine //EXAMPLE: <li class="example">@variable</li>
+                            .Substring(0, atSignIndex) //Substring() => "<li class="example">"
+                            .Replace("\"", "\"\""); //Replace() => "<li class=""example"">" escaped html before @
+
+                        builder.Append(htmlBeforeAtSign + "\"" + "+"); //Append() => result.AppendLine("<li class=""example"">" +
+
+                        string lineAfterAtSign = currentLine //EXAMPLE: <li class="example">@variable</li>
+                            .Substring(atSignIndex + 1); //Substring() => variable</li>
+
+                        string csharpCode = matchEndOfCSharpCode //EXAMPLE: variable</li>
+                            .Match(lineAfterAtSign).Value; //Match() => variable
+
+                        builder
+                            .Append(csharpCode + "+ \""); //Append() => result.AppendLine("<li class=""example"">" + variable + "
+
+                        currentLine = lineAfterAtSign.Substring(csharpCode.Length);
+
+                    }
+
+                    builder //AppendLine() => result.AppendLine("<li class=""example"">" + variable + "</li>");
+                        .AppendLine($"{currentLine.Replace("\"", "\"\"")}\");");
+                }
             }
 
-            return builder.ToString();
+            return builder.ToString(); //.Replace("@",string.Empty);
         }
 
         //2. Get only compile part from the csharp code;
