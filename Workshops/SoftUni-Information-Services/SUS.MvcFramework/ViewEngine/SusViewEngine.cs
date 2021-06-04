@@ -18,7 +18,7 @@ namespace SUS.MvcFramework.ViewEngine
             //TODO: Implement logic
 
             //1. Get from Template Code only csharp part
-            string csharpCode = GenerateCSharpFromTemplate(templateCode);
+            string csharpCode = GenerateCSharpFromTemplate(templateCode, viewModel);
 
             //3. Executable obj must have GenerateHtml method witch parameter is the view model.
             IView executableObj = GenerateExecutableCode(csharpCode, viewModel);
@@ -30,9 +30,16 @@ namespace SUS.MvcFramework.ViewEngine
             return readyHtml;
         }
 
-        private string GenerateCSharpFromTemplate(string template)
+        private string GenerateCSharpFromTemplate(string template, object viewModel)
         {
             string methodBody = GetMethodBody(template);
+
+            string typeOfModel = viewModel.GetType().FullName;
+
+            if (typeOfModel == null)
+            {
+                typeOfModel = "object";
+            }
 
             string csharpCode = @"
                                using System;
@@ -47,6 +54,8 @@ namespace SUS.MvcFramework.ViewEngine
                                     {
                                          public string GenerateHtml(object viewModel)
                                          {
+                                            var Model = viewModel as " + $"{typeOfModel};" + @"
+
                                             StringBuilder result = new StringBuilder();
 
                                             " + $"{methodBody}" + @"
@@ -96,7 +105,7 @@ namespace SUS.MvcFramework.ViewEngine
                 }
                 else
                 {
-                    Regex matchEndOfCSharpCode = new Regex(@"^[^\""\s&\'< \!]+");
+                    Regex matchEndOfCSharpCode = new Regex(@"^[^\""\s&\'< !]+");
 
                     builder.Append($"result.AppendLine(@\""); // => result.AppendLine(@"
 
@@ -128,7 +137,7 @@ namespace SUS.MvcFramework.ViewEngine
                 }
             }
 
-            return builder.ToString(); //.Replace("@",string.Empty);
+            return builder.ToString();
         }
 
         //2. Get only compile part from the csharp code;
@@ -179,7 +188,7 @@ namespace SUS.MvcFramework.ViewEngine
 
                 Type viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
 
-                var instance = Activator.CreateInstance(viewType);
+                object? instance = Activator.CreateInstance(viewType);
 
                 return instance as IView;
             }

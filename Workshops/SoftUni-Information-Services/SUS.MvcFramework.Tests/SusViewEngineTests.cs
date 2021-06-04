@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using SUS.MvcFramework.Tests.ViewModels;
 using SUS.MvcFramework.ViewEngine;
 using Xunit;
 
@@ -31,19 +32,6 @@ namespace SUS.MvcFramework.Tests
 
             Assert.Equal(expectedResult, actualResult);
 
-        }
-
-        public class TestViewModel
-        {
-            public TestViewModel()
-            {
-            }
-
-            public string Name { get; set; }
-
-            public decimal Price { get; set; }
-
-            public DateTime DateOfBirth { get; set; }
         }
     }
 }
