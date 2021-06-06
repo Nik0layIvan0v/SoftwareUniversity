@@ -1,20 +1,34 @@
 ﻿using SUS.HTTP;
 using System.Runtime.CompilerServices;
 using System.Text;
+using SUS.MvcFramework.ViewEngine;
 
 namespace SUS.MvcFramework
 {
     public abstract class Controller
     {
-        public HttpResponse View([CallerMemberName] string actionName = null)
+        protected Controller()
+        {
+            this.ViewEngine = new SusViewEngine();
+        }
+
+        public SusViewEngine ViewEngine { get; set; }
+
+        public HttpResponse View(object viewModel = null, [CallerMemberName] string actionName = null)
         {
             string controllerName = this.GetType().Name.Replace("Controller", string.Empty);
 
-            string viewContent = System.IO.File.ReadAllText($"Views/{controllerName}/{actionName}.html");
+            string viewContent = System.IO.File.ReadAllText($"Views/{controllerName}/{actionName}.cshtml");
 
-            string layout = System.IO.File.ReadAllText("Views/Shared/_Layout.html");
+            viewContent = this.ViewEngine.GetHtml(viewContent, viewModel);
 
-            string combinationLayoutAndViewContent = layout.Replace("@RenderBody()", viewContent);
+            string layout = System.IO.File.ReadAllText("Views/Shared/_Layout.cshtml");
+
+            layout = layout.Replace("@RenderBody()", "___VIEW_GOES_HERE___");
+
+            layout = this.ViewEngine.GetHtml(layout, viewModel);
+
+            string combinationLayoutAndViewContent = layout.Replace("___VIEW_GOES_HERE___", viewContent);
 
             byte[] dataBytes = Encoding.UTF8.GetBytes(combinationLayoutAndViewContent);
 
@@ -23,7 +37,7 @@ namespace SUS.MvcFramework
 
         public HttpResponse File(string filePath, string contentType)
         {
-            HttpResponse response = new HttpResponse(contentType,new byte[0]);
+            HttpResponse response = new HttpResponse(contentType, new byte[0]);
 
             if (System.IO.File.Exists(filePath))
             {

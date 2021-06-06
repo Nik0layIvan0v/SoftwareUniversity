@@ -7,7 +7,7 @@ namespace SUS.MvcFramework
 {
     public static class Host
     {
-        public static async Task CreateHostAsync<T>(int port = 80)
+        public static async Task CreateHostAsync<T>(int port = HttpConstants.DefaultPortNumber)
              where T : class, IMvcApplication
         {
             ICollection<Route> routes = new List<Route>();

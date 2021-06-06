@@ -9,7 +9,7 @@ namespace MyFirstMvcApp
     {
         public static async Task Main()
         {
-            Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/");
+            Process.Start(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", "http://localhost/"); //Add :{Port} from .CreateHostAsync<Startup>()
 
             //Port number is optional!
             await Host.CreateHostAsync<Startup>(HttpConstants.DefaultPortNumber); 

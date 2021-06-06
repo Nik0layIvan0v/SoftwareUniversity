@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using SUS.MvcFramework.Tests.ViewModels;
 using SUS.MvcFramework.ViewEngine;
@@ -13,6 +14,7 @@ namespace SUS.MvcFramework.Tests
         [InlineData("Foreach")]
         [InlineData("IfElseFor")]
         [InlineData("ViewModel")]
+        [InlineData("ParsingScripts")]
         public void TestGetHtml(string fileName)
         {
             string templateCode = File.ReadAllText($"ViewTests/{fileName}.html");
@@ -33,5 +35,24 @@ namespace SUS.MvcFramework.Tests
             Assert.Equal(expectedResult, actualResult);
 
         }
+
+        [Fact]
+        public void TestTemplateViewModel()
+        {
+            IViewEngine vurViewEngine = new SusViewEngine();
+
+            var actualResult = vurViewEngine
+                .GetHtml(@"@foreach(var num in Model)
+                {
+<span>@num</span>
+                }", new List<int> { 1, 2, 3 });
+
+            var expectedResult = @"<span>1</span>
+<span>2</span>
+<span>3</span>";
+
+            Assert.Equal(expectedResult, actualResult);
+        }
     }
+
 }

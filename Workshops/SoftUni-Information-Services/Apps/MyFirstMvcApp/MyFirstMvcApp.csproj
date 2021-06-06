@@ -17,22 +17,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Views\Home\About.html">
+    <None Update="Views\Home\About.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Home\Index.html">
+    <None Update="Views\Home\Index.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Shared\ErrorView.html">
+    <None Update="Views\Shared\ErrorView.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Shared\_Layout.html">
+    <None Update="Views\Shared\_Layout.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Users\Login.html">
+    <None Update="Views\Users\Login.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Users\Register.html">
+    <None Update="Views\Users\Register.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="wwwRoot\css\bootstrap.min.css">

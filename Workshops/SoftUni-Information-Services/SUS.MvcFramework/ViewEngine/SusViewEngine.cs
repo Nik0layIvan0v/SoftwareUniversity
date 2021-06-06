@@ -34,11 +34,27 @@ namespace SUS.MvcFramework.ViewEngine
         {
             string methodBody = GetMethodBody(template);
 
-            string typeOfModel = viewModel.GetType().FullName;
+            string typeOfModel = "object";
 
-            if (typeOfModel == null)
+            if (viewModel != null)
             {
-                typeOfModel = "object";
+                if (viewModel.GetType().IsGenericType)
+                {
+                    string modelName = viewModel.GetType().FullName; // => example: List<string> will be List`1
+
+                    Type[] genericArguments = viewModel.GetType().GenericTypeArguments;// => List<string> args: string... Dictionary<string,int> args: string, int... etc.
+
+                    typeOfModel = modelName.Substring(0,modelName.IndexOf('`')); // List`1 => Substring() => List
+
+                    string splitArguments = string.Join(',', genericArguments.Select(v=>v.Name).ToList());
+
+                    typeOfModel = typeOfModel + "<" + $"{splitArguments}" + ">";
+
+                }
+                else
+                {
+                    typeOfModel = viewModel.GetType().FullName;
+                }
             }
 
             string csharpCode = @"
@@ -89,8 +105,7 @@ namespace SUS.MvcFramework.ViewEngine
                     break;
                 }
 
-                if (currentLine.TrimStart().StartsWith('@')
-                    && supportedOperations
+                if (supportedOperations
                         .Any(supportedOperator => currentLine.TrimStart().StartsWith("@" + supportedOperator)))
                 {
                     int atSignIndex = currentLine.IndexOf('@');
@@ -105,7 +120,7 @@ namespace SUS.MvcFramework.ViewEngine
                 }
                 else
                 {
-                    Regex matchEndOfCSharpCode = new Regex(@"^[^\""\s&\'< !]+");
+                    Regex matchEndOfCSharpCode = new Regex(@"^[^\""\s&\'< >/\!]+");
 
                     builder.Append($"result.AppendLine(@\""); // => result.AppendLine(@"
 
