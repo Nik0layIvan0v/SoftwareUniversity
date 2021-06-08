@@ -85,9 +85,9 @@ namespace SUS.HTTP
                     }
                     else
                     {
-                        string layout = await System.IO.File.ReadAllTextAsync("Views/Shared/_Layout.html");
+                        string layout = await System.IO.File.ReadAllTextAsync("Views/Shared/_Layout.cshtml");
                         
-                        string viewContent = await System.IO.File.ReadAllTextAsync("Views/Shared/ErrorView.html");
+                        string viewContent = await System.IO.File.ReadAllTextAsync("Views/Shared/ErrorView.cshtml");
 
                         string combinationLayoutAndViewContent = layout.Replace("@RenderBody()", viewContent);
 

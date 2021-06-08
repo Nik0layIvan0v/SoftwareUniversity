@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using MyFirstMvcApp.ViewModels;
 using SUS.HTTP;
 using SUS.MvcFramework;
+using System;
 
 namespace MyFirstMvcApp.Controllers
 {
@@ -9,12 +9,12 @@ namespace MyFirstMvcApp.Controllers
     {
         public HttpResponse Index(HttpRequest request)
         {
-            if (request.Headers.FirstOrDefault(x => x.Name == "ivan") != null)
-            {
-                Console.WriteLine("ivan is logged in the system.");
-            }
+            HomeViewModel viewModel = new HomeViewModel();
+            //Property data may come from Database/Services/Repositories or else;
+            viewModel.CurrentYear = DateTime.UtcNow.Year;
+            viewModel.Message = "I am the message from the ViewModel";
 
-            return this.View();
+            return this.View(viewModel);
         }
 
         public HttpResponse About(HttpRequest request)

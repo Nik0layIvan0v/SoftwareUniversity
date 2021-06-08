@@ -35,7 +35,7 @@ namespace SUS.MvcFramework
             return new HttpResponse("text/html", dataBytes);
         }
 
-        public HttpResponse File(string filePath, string contentType)
+        public HttpResponse FileResponse(string filePath, string contentType)
         {
             HttpResponse response = new HttpResponse(contentType, new byte[0]);
 
