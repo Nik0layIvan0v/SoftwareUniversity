@@ -20,4 +20,8 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Views\Users\LoginConfirmed.cshtml" />
+	</ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
-﻿using SUS.HTTP;
+﻿using MyFirstMvcApp.ViewModels;
+using SUS.HTTP;
 using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Controllers
@@ -15,15 +16,24 @@ namespace MyFirstMvcApp.Controllers
             return this.View();
         }
 
+        [HttpPost]
         public HttpResponse LoginConfirmed()
         {
-            //TODO: Read Data
+            //TODO: Read Data - DONE!!!
+            //this.HttpRequest.FormData[{name of form input}]
+
             //TODO: Check User
+            LoginUserViewModel testModel = new LoginUserViewModel
+            {
+                FirstName = this.HttpRequest.FormData["firstName"],
+                LastName = this.HttpRequest.FormData["lastName"]
+            };
+
             //TODO: Log User
 
             //TODO: Redirect Home Page - DONE!!!
 
-            return this.Redirect("/");
+            return this.View(testModel);
         }
     }
 }
