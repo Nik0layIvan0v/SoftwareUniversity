@@ -1,4 +1,5 @@
-﻿using SUS.HTTP;
+﻿using System;
+using SUS.HTTP;
 using System.Runtime.CompilerServices;
 using System.Text;
 using SUS.MvcFramework.ViewEngine;
@@ -13,6 +14,8 @@ namespace SUS.MvcFramework
         }
 
         public SusViewEngine ViewEngine { get; set; }
+
+        public HttpRequest HttpRequest { get; set; }
 
         public HttpResponse View(object viewModel = null, [CallerMemberName] string actionName = null)
         {
@@ -37,7 +40,7 @@ namespace SUS.MvcFramework
 
         public HttpResponse FileResponse(string filePath, string contentType)
         {
-            HttpResponse response = new HttpResponse(contentType, new byte[0]);
+            HttpResponse response = new HttpResponse(contentType, Array.Empty<byte>());
 
             if (System.IO.File.Exists(filePath))
             {

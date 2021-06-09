@@ -135,9 +135,11 @@ namespace SUS.MvcFramework
 
                         Func<HttpRequest, HttpResponse> controllerAction = (request) =>
                         {
-                            var instance = Activator.CreateInstance(controllerType);
+                            Controller instance = Activator.CreateInstance(controllerType) as Controller;
 
-                            HttpResponse httpResponse = currentMethod.Invoke(instance, new[] { request }) as HttpResponse;
+                            instance.HttpRequest = request;
+
+                            HttpResponse httpResponse = currentMethod.Invoke(instance, Array.Empty<object>()) as HttpResponse;
 
                             return httpResponse;
                         };

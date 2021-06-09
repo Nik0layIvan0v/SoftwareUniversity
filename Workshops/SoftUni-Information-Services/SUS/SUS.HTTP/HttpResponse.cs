@@ -11,7 +11,7 @@ namespace SUS.HTTP
             this.HttpStatusCode = statusCode;
             this.Cookies = new List<Cookie>();
             this.Headers = new List<Header>();
-            this.ResponseBody = new byte[0];
+            this.ResponseBody = Array.Empty<byte>();
         }
 
         public HttpResponse(string contentType, byte[] responseBodyBytes, HttpStatusCode statusCode = HttpStatusCode.Ok)

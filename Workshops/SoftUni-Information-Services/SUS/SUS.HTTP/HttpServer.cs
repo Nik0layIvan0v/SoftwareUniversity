@@ -45,7 +45,7 @@ namespace SUS.HTTP
 
                     while (true)
                     {
-                        int countOfReadBytes = await stream.ReadAsync(buffer, position, buffer.Length);
+                        int countOfReadBytes = await stream.ReadAsync(buffer.AsMemory(position, buffer.Length));
 
                         position += countOfReadBytes;
 

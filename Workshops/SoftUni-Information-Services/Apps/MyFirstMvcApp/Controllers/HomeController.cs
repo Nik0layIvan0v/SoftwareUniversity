@@ -7,7 +7,7 @@ namespace MyFirstMvcApp.Controllers
 {
     public class HomeController : Controller
     {
-        public HttpResponse Index(HttpRequest request)
+        public HttpResponse Index()
         {
             HomeViewModel viewModel = new HomeViewModel();
             //Property data may come from Database/Services/Repositories or else;
@@ -17,7 +17,7 @@ namespace MyFirstMvcApp.Controllers
             return this.View(viewModel);
         }
 
-        public HttpResponse About(HttpRequest request)
+        public HttpResponse About()
         {
             return this.View();
         }
