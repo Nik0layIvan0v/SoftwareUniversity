@@ -81,7 +81,6 @@ namespace SUS.MvcFramework.ViewEngine
                                     }
                                 }
                                 ";
-
             return csharpCode;
         }
 
@@ -120,7 +119,7 @@ namespace SUS.MvcFramework.ViewEngine
                 }
                 else
                 {
-                    Regex matchEndOfCSharpCode = new Regex(@"^[^\""\s&\'< >/\!]+");
+                    Regex matchEndOfCSharpCode = new Regex(@"[^\""\s&\'\<]+");
 
                     builder.Append($"result.AppendLine(@\""); // => result.AppendLine(@"
 
@@ -201,7 +200,7 @@ namespace SUS.MvcFramework.ViewEngine
 
                 Assembly viewAssembly = Assembly.Load(rawAssembly);
 
-                Type viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
+                var viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
 
                 object? instance = Activator.CreateInstance(viewType);
 

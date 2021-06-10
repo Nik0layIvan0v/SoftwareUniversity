@@ -1,7 +1,8 @@
 ﻿using MyFirstMvcApp.Controllers;
+using MyFirstMvcApp.Data;
+using SUS.HTTP;
 using SUS.MvcFramework;
 using System.Collections.Generic;
-using SUS.HTTP;
 
 namespace MyFirstMvcApp
 {
@@ -10,6 +11,9 @@ namespace MyFirstMvcApp
         public void ConfigureServices()
         {
             //TODO: implement ConfigureServices
+
+            new ApplicationDbContext().Database.EnsureCreated();
+
         }
 
         public void Configure(ICollection<Route> routeTable)

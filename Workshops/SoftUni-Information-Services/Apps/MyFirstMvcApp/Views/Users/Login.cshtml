@@ -1,7 +1,17 @@
-﻿<form action="/Users/LoginConfirmed" method="post">
-    <label for="firstName">First name:</label><br>
-    <input type="text" name="firstName" placeholder="John"><br>
-    <label for="lastName">Last name:</label><br>
-    <input type="text" name="lastName" placeholder="Doe"><br><br>
-    <input type="submit" value="Submit">
-</form>
+﻿<div class="container h1">
+    @if (Model.Length > 0)
+    {
+        <ol>
+
+            @foreach (var user in Model)
+            {
+                <li>@user.FirstName @user.LastName</li>
+            }
+
+        </ol>
+    }
+    @else
+    {
+    <p>No Registered Users!</p>
+    }
+</div>
