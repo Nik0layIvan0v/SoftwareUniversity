@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MyFirstMvcApp.Data;
+﻿using MyFirstMvcApp.Data;
 using MyFirstMvcApp.Data.EntityModels;
 using MyFirstMvcApp.ViewModels;
 using SUS.HTTP;
 using SUS.MvcFramework;
+using System.Linq;
 
 namespace MyFirstMvcApp.Controllers
 {
@@ -28,7 +27,7 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse Login()
         {
-            var models = dbContext.Users
+            LoginUserViewModel[] models = dbContext.Users
                 .Select(user => new LoginUserViewModel
                 {
                     FirstName = user.FirstName,
@@ -49,7 +48,12 @@ namespace MyFirstMvcApp.Controllers
 
             //TODO: Log User
 
-            //TODO: Redirect Home Page - DONE!!!
+            //TODO: Redirect - DONE!!!
+
+            if (this.HttpRequest.FormData["firstName"].Length > 20)
+            {
+                return this.Error("Name should not exceed 20 Symbols");
+            }
 
             dbContext.Users.Add(new User
             {

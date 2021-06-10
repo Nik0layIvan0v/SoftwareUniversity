@@ -155,7 +155,7 @@ namespace SUS.MvcFramework.ViewEngine
         }
 
         //2. Get only compile part from the csharp code;
-        private IView GenerateExecutableCode(string csharpCode, object viewModel)
+        private static IView GenerateExecutableCode(string csharpCode, object viewModel)
         {
             CSharpCompilation compileResult = CSharpCompilation
                 .Create("ViewAssembly")

@@ -1,8 +1,8 @@
-﻿using System;
-using SUS.HTTP;
+﻿using SUS.HTTP;
+using SUS.MvcFramework.ViewEngine;
+using System;
 using System.Runtime.CompilerServices;
 using System.Text;
-using SUS.MvcFramework.ViewEngine;
 
 namespace SUS.MvcFramework
 {
@@ -25,6 +25,15 @@ namespace SUS.MvcFramework
 
             viewContent = this.ViewEngine.GetHtml(viewContent, viewModel);
 
+            string combinationLayoutAndViewContent = this.PutViewInLayout(viewContent, viewModel);
+
+            byte[] dataBytes = Encoding.UTF8.GetBytes(combinationLayoutAndViewContent);
+
+            return new HttpResponse("text/html", dataBytes);
+        }
+
+        private string PutViewInLayout(string viewContent, object viewModel = null)
+        {
             string layout = System.IO.File.ReadAllText("Views/Shared/_Layout.cshtml");
 
             layout = layout.Replace("@RenderBody()", "___VIEW_GOES_HERE___");
@@ -33,11 +42,8 @@ namespace SUS.MvcFramework
 
             string combinationLayoutAndViewContent = layout.Replace("___VIEW_GOES_HERE___", viewContent);
 
-            byte[] dataBytes = Encoding.UTF8.GetBytes(combinationLayoutAndViewContent);
-
-            return new HttpResponse("text/html", dataBytes);
+            return combinationLayoutAndViewContent;
         }
-
         public HttpResponse FileResponse(string filePath, string contentType)
         {
             HttpResponse response = new HttpResponse(contentType, Array.Empty<byte>());
@@ -58,6 +64,22 @@ namespace SUS.MvcFramework
             response.Headers.Add(new Header("Location", url));
 
             return response;
+        }
+
+        /// <summary>
+        /// Helper method for input validations of all derived controllers
+        /// </summary>
+        /// <param name="message">The message to show</param>
+        /// <returns>HttpResponse with visual message for UI (for example on the layout)</returns>
+        public HttpResponse Error(string message)
+        {
+            string alertError = $@"<div class=""alert alert-danger"" role=""alert"">{message}</div>";
+
+            string combinationLayoutAndViewContent = this.PutViewInLayout(alertError);
+
+            byte[] dataBytes = Encoding.UTF8.GetBytes(combinationLayoutAndViewContent);
+
+            return new HttpResponse("text/html", dataBytes, HttpStatusCode.Unauthorized);
         }
     }
 }
