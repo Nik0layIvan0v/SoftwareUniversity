@@ -165,6 +165,16 @@ namespace SUS.MvcFramework.ViewEngine
 
             if (viewModel != null)
             {
+                if (viewModel.GetType().IsGenericType)
+                {
+                    Type[] genericArguments = viewModel.GetType().GenericTypeArguments;
+
+                    foreach (Type argument in genericArguments)
+                    {
+                        compileResult = compileResult.AddReferences(MetadataReference.CreateFromFile(argument.Assembly.Location));
+                    }
+                }
+
                 compileResult = compileResult
                     .AddReferences(MetadataReference.CreateFromFile(viewModel.GetType().Assembly.Location));
             }

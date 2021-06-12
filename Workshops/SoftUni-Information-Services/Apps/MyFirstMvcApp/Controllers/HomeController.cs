@@ -2,6 +2,7 @@
 using SUS.HTTP;
 using SUS.MvcFramework;
 using System;
+using System.Collections.Generic;
 
 namespace MyFirstMvcApp.Controllers
 {
@@ -19,7 +20,12 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse About()
         {
-            return this.View();
+            List<int> viewModel = new List<int>
+            {
+                1,2,3,4,5
+            };
+
+            return this.View(viewModel);
         }
     }
 }
