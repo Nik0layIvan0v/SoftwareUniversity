@@ -9,5 +9,7 @@
         public const int DefaultPortNumber = 80;
 
         public const string RequestCookieHeader = "Cookie";
+
+        public const string SessionCookieName = "sid";
     }
 }

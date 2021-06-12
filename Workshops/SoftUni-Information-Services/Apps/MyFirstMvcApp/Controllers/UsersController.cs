@@ -22,6 +22,8 @@ namespace MyFirstMvcApp.Controllers
 
             //TODO: Redirect Home Page - DONE!!!
 
+            this.HttpRequest.SessionData["Register"] = "TEST SESSION DATA!";
+
             return this.View();
         }
 
@@ -34,6 +36,11 @@ namespace MyFirstMvcApp.Controllers
                     LastName = user.LastName
                 })
                 .ToArray();
+
+            if (this.HttpRequest.SessionData.ContainsKey("Register"))
+            {
+                models.First().LastName = "Based on TEST SESSION DATA! from Register() This was changed!";
+            }
 
             return this.View(models);
         }

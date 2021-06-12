@@ -1,16 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using SUS.MvcFramework;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyFirstMvcApp.Data.EntityModels
+namespace SUS.MvcFramework
 {
-    public class User : UserIdentity
+    public class UserIdentity
     {
-        public User()
-        {
-            this.Id = Guid.NewGuid().ToString();
-        }
-        
         [Required]
         public string Id { get; set; }
 

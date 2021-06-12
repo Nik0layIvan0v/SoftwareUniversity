@@ -8,11 +8,18 @@ namespace SUS.HTTP
 {
     public class HttpRequest
     {
+        /// <summary>
+        /// Stores all sessions ids from different browsers /users/
+        /// </summary>
+        public static IDictionary<string,Dictionary<string,string>> Sessions = 
+            new Dictionary<string, Dictionary<string, string>>();
+
         public HttpRequest(string requestString)
         {
             this.Headers = new List<Header>();
             this.Cookies = new List<Cookie>();
             this.FormData = new Dictionary<string, string>();
+            this.SessionData = new Dictionary<string, string>();
 
             string[] lines = requestString
                 .Split(HttpConstants.HttpNewLine, StringSplitOptions.None)
@@ -71,6 +78,31 @@ namespace SUS.HTTP
                 }
             }
 
+            Cookie sessionCookie = this.Cookies
+                .FirstOrDefault(x => x.Name == HttpConstants.SessionCookieName);
+
+            if (sessionCookie == null)
+            {
+                string newSessionId = Guid.NewGuid().ToString();
+
+                this.SessionData = new Dictionary<string, string>();
+
+                Sessions.Add(newSessionId, this.SessionData);
+
+                this.Cookies.Add(new Cookie(HttpConstants.SessionCookieName, newSessionId));
+            }
+            else if (!Sessions.ContainsKey(sessionCookie.Value))
+            {
+                //If we stop server and then start it again and browser send last cookie.
+                this.SessionData = new Dictionary<string, string>();
+
+                Sessions.Add(sessionCookie.Value, this.SessionData);
+            }
+            else
+            {
+                this.SessionData = Sessions[sessionCookie.Value];
+            }
+
             this.RequestBody = bodyBuilder.ToString();
 
             if (!string.IsNullOrEmpty(this.RequestBody))
@@ -104,7 +136,6 @@ namespace SUS.HTTP
             }
         }
 
-
         public string Path { get; set; }
 
         public HttpMethod Method { get; set; }
@@ -113,7 +144,8 @@ namespace SUS.HTTP
 
         public ICollection<Cookie> Cookies { get; set; }
 
-        //private set? init? get only?
+        public Dictionary<string,string> SessionData { get; set; }
+
         public IDictionary<string, string> FormData { get; set; }
 
         public string RequestBody { get; set; }

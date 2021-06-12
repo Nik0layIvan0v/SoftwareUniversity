@@ -74,7 +74,7 @@ namespace SUS.HTTP
 
                     HttpResponse response;
 
-                    Route route = this.routeTable.FirstOrDefault(x=> String.Compare(x.Path,request.Path, StringComparison.OrdinalIgnoreCase) == 0
+                    Route route = this.routeTable.FirstOrDefault(x => string.Compare(x.Path, request.Path, StringComparison.OrdinalIgnoreCase) == 0
                                                                      && x.HttpMethod == request.Method);
 
                     if (route != null)
@@ -86,7 +86,7 @@ namespace SUS.HTTP
                     else
                     {
                         string layout = await System.IO.File.ReadAllTextAsync("Views/Shared/_Layout.cshtml");
-                        
+
                         string viewContent = await System.IO.File.ReadAllTextAsync("Views/Shared/ErrorView.cshtml");
 
                         string combinationLayoutAndViewContent = layout.Replace("@RenderBody()", viewContent);
@@ -96,14 +96,23 @@ namespace SUS.HTTP
                         response = new HttpResponse("text/html", dataBytes, HttpStatusCode.NotFound);
                     }
 
-                    Cookie cookie = response.Cookies.FirstOrDefault(x => x.Name == "SID");
-
-                    if (cookie == null)
-                    {
-                        response.Cookies.Add(new Cookie("SID", Guid.NewGuid().ToString()));
-                    }
-                    
                     Console.WriteLine($"Response: Status Code => {response.HttpStatusCode.ToString()} Path => {request.Path} Count of Headers: {request.Headers.Count}");
+
+                    response.Headers.Add(new Header("Server", "MyCoolServer v1.0"));
+
+                    Cookie sessionCookie = request.Cookies.FirstOrDefault(x => x.Name == HttpConstants.SessionCookieName);
+
+                    if (sessionCookie != null)
+                    {
+                        ResponseCookie responseCookie = new ResponseCookie(sessionCookie.Name, sessionCookie.Value)
+                        {
+                            Path = "/",
+                            HttpOnly = true,
+                            MaxAge = 10000
+                        };
+
+                        response.Cookies.Add(responseCookie);
+                    }
 
                     byte[] responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
 
