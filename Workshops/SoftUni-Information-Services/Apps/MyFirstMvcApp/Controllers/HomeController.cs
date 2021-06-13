@@ -35,6 +35,11 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse AutoLogin()
         {
+            if (IsUserSignedIn() == true)
+            {
+                return this.Error("User is already logged in"); ;
+            }
+
             this.SignIn("niki");
 
             return this.Redirect("/home/index");
@@ -42,6 +47,11 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse AutoLogOut()
         {
+            if (IsUserSignedIn() == false)
+            {
+                return this.Error("User is already signed out");
+            }
+
             this.SignOut();
 
             return this.Redirect("/home/index");
