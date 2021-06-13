@@ -13,7 +13,12 @@ namespace MyFirstMvcApp.Controllers
             HomeViewModel viewModel = new HomeViewModel();
             //Property data may come from Database/Services/Repositories or else;
             viewModel.CurrentYear = DateTime.UtcNow.Year;
-            viewModel.Message = "I am the message from the ViewModel";
+            viewModel.Message = "WELCOME USER!";
+
+            if (this.IsUserSignedIn() == false)
+            {
+                viewModel.Message = "User is not logged in!";
+            }
 
             return this.View(viewModel);
         }
@@ -26,6 +31,20 @@ namespace MyFirstMvcApp.Controllers
             };
 
             return this.View(viewModel);
+        }
+
+        public HttpResponse AutoLogin()
+        {
+            this.SignIn("niki");
+
+            return this.Redirect("/home/index");
+        }
+
+        public HttpResponse AutoLogOut()
+        {
+            this.SignOut();
+
+            return this.Redirect("/home/index");
         }
     }
 }

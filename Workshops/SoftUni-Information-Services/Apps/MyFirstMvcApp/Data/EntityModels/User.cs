@@ -4,13 +4,14 @@ using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Data.EntityModels
 {
-    public class User : UserIdentity
+    public class User : IdentityUser<string>
     {
         public User()
         {
             this.Id = Guid.NewGuid().ToString();
+            this.Role = IdentityRole.User;
         }
-        
+
         [Required]
         public string Id { get; set; }
 
@@ -23,5 +24,7 @@ namespace MyFirstMvcApp.Data.EntityModels
         public string LastName { get; set; }
 
         public string Description { get; set; }
+
+        public IdentityRole Role { get; set; }
     }
 }

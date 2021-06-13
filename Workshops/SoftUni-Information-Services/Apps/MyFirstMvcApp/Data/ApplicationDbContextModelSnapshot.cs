@@ -38,6 +38,9 @@ namespace MyFirstMvcApp.Data
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");

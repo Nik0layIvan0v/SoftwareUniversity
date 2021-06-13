@@ -14,13 +14,16 @@ namespace MyFirstMvcApp.Controllers
         public HttpResponse Register()
         {
             //TODO: Read Data - DONE!!!
-            //this.HttpRequest.FormData[{name of form input}]
+            //EXAMPLE: this.HttpRequest.FormData[{name of form input}]
 
             //TODO: Check User
+            //CHECK PASSWORD OF USER THROUGHOUT DB CONTEXT!
 
             //TODO: Log User
+            //EXAMPLE: this.SignIn({User});
 
             //TODO: Redirect Home Page - DONE!!!
+            //EXAMPLE: this.Redirect("/");
 
             this.HttpRequest.SessionData["Register"] = "TEST SESSION DATA!";
 
