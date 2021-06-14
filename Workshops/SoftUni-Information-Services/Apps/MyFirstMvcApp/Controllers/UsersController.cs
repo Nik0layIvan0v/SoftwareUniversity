@@ -60,6 +60,11 @@ namespace MyFirstMvcApp.Controllers
         [HttpPost("/users/login")]
         public HttpResponse LoginConfirmed()
         {
+            if (IsUserSignedIn() == true)
+            {
+                return this.Error("User is already logged in"); ;
+            }
+
             //TODO: Read Data - DONE!!!
             string username = this.HttpRequest.FormData["Username"].ToLower();
             string password = this.HttpRequest.FormData["Password"].Trim();
@@ -81,6 +86,11 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse LogOut()
         {
+            if (IsUserSignedIn() == false)
+            {
+                return this.Error("User is already signed out");
+            }
+
             this.SignOut();
 
             return this.Redirect("/home/index");

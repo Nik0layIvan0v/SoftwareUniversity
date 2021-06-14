@@ -1,2 +1,10 @@
 ﻿<img src="/img/flowerImage.png" class="img-thumbnail" />
-<h1>Welcome!</h1>
+
+@if (Model != null)
+{
+    <h1>Welcome!</h1>
+}
+@else
+{
+    <h1>You are not in system please log in or Register!</h1>
+}

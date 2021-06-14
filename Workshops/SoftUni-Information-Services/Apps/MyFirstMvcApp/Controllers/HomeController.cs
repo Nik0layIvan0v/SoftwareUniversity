@@ -13,8 +13,6 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse Index()
         {
-            //LoggedUserViewModel userViewModel = null;
-
             if (this.IsUserSignedIn())
             {
                 string currentlyLoggedUserId = this.GetUserId();
@@ -36,30 +34,6 @@ namespace MyFirstMvcApp.Controllers
         public HttpResponse About()
         {
             return this.View();
-        }
-
-        public HttpResponse AutoLogin()
-        {
-            if (IsUserSignedIn() == true)
-            {
-                return this.Error("User is already logged in"); ;
-            }
-
-            this.SignIn(db.Users.FirstOrDefault()?.Id);
-
-            return this.Redirect("/home/index");
-        }
-
-        public HttpResponse AutoLogOut()
-        {
-            if (IsUserSignedIn() == false)
-            {
-                return this.Error("User is already signed out");
-            }
-
-            this.SignOut();
-
-            return this.Redirect("/home/index");
         }
     }
 }
