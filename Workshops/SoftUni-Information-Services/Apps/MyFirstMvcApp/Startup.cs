@@ -12,12 +12,13 @@ namespace MyFirstMvcApp
         public void ConfigureServices()
         {
             //TODO: implement ConfigureServices
-            new ApplicationDbContext().Database.EnsureCreated();
-
         }
 
         public void Configure(ICollection<Route> routeTable)
         {
+
+            new ApplicationDbContext().Database.Migrate();
+
             //To be sure that even if there is no [HttpGet("/")] the route "/" with GET method to be registered!
             routeTable.Add(new Route("/", request => new HomeController().Index(), HttpMethod.Get));
         }

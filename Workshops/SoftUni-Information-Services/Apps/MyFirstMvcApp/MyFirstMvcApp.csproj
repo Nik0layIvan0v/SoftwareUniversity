@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Views\Users\LoginConfirmed.cshtml" />
+	  <None Remove="Views\Users\loginAnimation.css" />
 	</ItemGroup>
 
 	<ItemGroup>

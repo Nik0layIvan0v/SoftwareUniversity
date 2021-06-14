@@ -7,6 +7,7 @@
     <link rel="icon" type="image/vnd.microsoft.icon" sizes="32x32" href="/favicon.ico">
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="/css/loginAnimation.css" />
     <style>
         ul {
             list-style-type: none;
@@ -45,7 +46,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/users/register">Register</a>
                 </li>
+                @if (Model != null)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users/LogOut">Log Out!</a>
+                    </li>
+                }
             </ul>
+
         </div>
     </nav>
 

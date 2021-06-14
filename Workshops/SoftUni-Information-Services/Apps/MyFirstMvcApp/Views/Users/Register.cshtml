@@ -1,7 +1,17 @@
-﻿<form action="/Users/LoginConfirmed" method="post">
-    <label for="firstName">First name:</label><br>
-    <input type="text" name="firstName" placeholder="John"><br>
-    <label for="lastName">Last name:</label><br>
-    <input type="text" name="lastName" placeholder="Doe"><br><br>
-    <input type="submit" value="Submit">
-</form>
+﻿<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img class="img-fluid mx-auto d-block col-5 p-3 mb-1" src="https://image.flaticon.com/icons/png/512/3456/3456388.png" id="icon" alt="User Icon" />
+        </div>
+
+        <!-- Login Form -->
+        <form method="post" action="/users/register">
+            <input type="text" id="login" class="fadeIn second" name="Username" placeholder="Username">
+            <input type="text" id="login" class="fadeIn second" name="Email" placeholder="Email">
+            <input type="text" id="password" class="fadeIn third" name="Password" placeholder="Password">
+            <input type="submit" class="fadeIn fourth" value="Register">
+        </form>
+    </div>
+</div>

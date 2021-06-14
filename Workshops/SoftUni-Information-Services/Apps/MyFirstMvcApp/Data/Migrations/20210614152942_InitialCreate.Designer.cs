@@ -9,8 +9,8 @@ using MyFirstMvcApp.Data;
 namespace MyFirstMvcApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210609134124_UserDescription")]
-    partial class UserDescription
+    [Migration("20210614152942_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,13 +28,21 @@ namespace MyFirstMvcApp.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(250)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(250)
                         .IsUnicode(true)

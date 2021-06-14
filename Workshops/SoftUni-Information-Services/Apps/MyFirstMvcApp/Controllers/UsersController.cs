@@ -1,6 +1,6 @@
 ﻿using MyFirstMvcApp.Data;
 using MyFirstMvcApp.Data.EntityModels;
-using MyFirstMvcApp.ViewModels;
+using MyFirstMvcApp.Services;
 using SUS.HTTP;
 using SUS.MvcFramework;
 using System.Linq;
@@ -9,71 +9,81 @@ namespace MyFirstMvcApp.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly ApplicationDbContext dbContext = new ApplicationDbContext();
+        private protected readonly IUsersService UsersService = new UsersService();
 
         public HttpResponse Register()
         {
-            //TODO: Read Data - DONE!!!
-            //EXAMPLE: this.HttpRequest.FormData[{name of form input}]
-
-            //TODO: Check User
-            //CHECK PASSWORD OF USER THROUGHOUT DB CONTEXT!
-
-            //TODO: Log User
-            //EXAMPLE: this.SignIn({User});
-
-            //TODO: Redirect Home Page - DONE!!!
-            //EXAMPLE: this.Redirect("/");
-
-            this.HttpRequest.SessionData["Register"] = "TEST SESSION DATA!";
-
             return this.View();
+        }
+
+        [HttpPost("/users/register")]
+        public HttpResponse RegisterData()
+        {
+            //TODO: Read Data - DONE!!!
+            string username = this.HttpRequest.FormData["Username"].ToLower();
+            string email = this.HttpRequest.FormData["Email"].ToLower();
+            string password = this.HttpRequest.FormData["Password"].Trim();
+
+            //TODO: Validate input from User
+            if (email.Contains("@") == false)
+            {
+                return this.Error("Invalid Email!");
+            }
+
+            if (UsersService.IsEmailAlreadyRegistered(email))
+            {
+                return this.Error("Email is already taken!!");
+            }
+
+            if (username.Length > 50 || UsersService.IsUserAlreadyRegistered(username))
+            {
+                return this.Error("Invalid UserName!");
+            }
+
+            if (password.Length > 50)
+            {
+                return this.Error("Password is too long!");
+            }
+
+            //TODO: Register User
+            UsersService.CreateUser(username, password, email);
+
+            //TODO: Redirect Login page! - DONE!!!
+            return this.Redirect("/home/index");
         }
 
         public HttpResponse Login()
         {
-            LoginUserViewModel[] models = dbContext.Users
-                .Select(user => new LoginUserViewModel
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName
-                })
-                .ToArray();
-
-            if (this.HttpRequest.SessionData.ContainsKey("Register"))
-            {
-                models.First().LastName = "Based on TEST SESSION DATA! from Register() This was changed!";
-            }
-
-            return this.View(models);
+            return this.View();
         }
 
-        [HttpPost]
+        [HttpPost("/users/login")]
         public HttpResponse LoginConfirmed()
         {
             //TODO: Read Data - DONE!!!
-            //this.HttpRequest.FormData[{name of form input}]
+            string username = this.HttpRequest.FormData["Username"].ToLower();
+            string password = this.HttpRequest.FormData["Password"].Trim();
 
             //TODO: Check User
-
-            //TODO: Log User
-
-            //TODO: Redirect - DONE!!!
-
-            if (this.HttpRequest.FormData["firstName"].Length > 20)
+            if (!UsersService.IsUserValid(username, password))
             {
-                return this.Error("Name should not exceed 20 Symbols");
+                return this.Error("Invalid password!");
             }
 
-            dbContext.Users.Add(new User
-            {
-                FirstName = this.HttpRequest.FormData["firstName"],
-                LastName = this.HttpRequest.FormData["lastName"]
-            });
+            //TODO: Log User
+            User user = new ApplicationDbContext().Users.FirstOrDefault(x => x.Username == username);
 
-            dbContext.SaveChanges();
+            this.SignIn(user.Id);
 
-            return this.Redirect("/users/login");
+            //TODO: Redirect to Home page - DONE!!!
+            return this.Redirect("/home/index");
+        }
+
+        public HttpResponse LogOut()
+        {
+            this.SignOut();
+
+            return this.Redirect("/home/index");
         }
     }
 }

@@ -1,17 +1,16 @@
-﻿<div class="container h1">
-    @if (Model.Length > 0)
-    {
-        <ol>
+﻿<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img class="img-fluid mx-auto d-block col-5 p-3 mb-1" src="https://image.flaticon.com/icons/png/512/1828/1828381.png" id="icon" alt="User Icon" />
+        </div>
 
-            @foreach (var user in Model)
-            {
-                <li>@user.FirstName @user.LastName</li>
-            }
-
-        </ol>
-    }
-    @else
-    {
-    <p>No Registered Users!</p>
-    }
+        <!-- Login Form -->
+        <form method="post" action="/users/login">
+            <input type="text" id="login" class="fadeIn first" name="Username" placeholder="username...">
+            <input type="text" id="login" class="fadeIn second" name="Password" placeholder="password...">
+            <input type="submit" class="fadeIn third" value="Log In">
+        </form>
+    </div>
 </div>

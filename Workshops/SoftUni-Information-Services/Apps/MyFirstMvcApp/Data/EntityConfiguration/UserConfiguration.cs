@@ -9,11 +9,15 @@ namespace MyFirstMvcApp.Data.EntityConfiguration
         public void Configure(EntityTypeBuilder<User> userBuilder)
         {
             userBuilder
-                .Property(p => p.FirstName)
+                .Property(p => p.Username)
                 .IsUnicode();
 
             userBuilder
-                .Property(p => p.LastName)
+                .Property(p => p.Email)
+                .IsUnicode();
+
+            userBuilder
+                .Property(x => x.Password)
                 .IsUnicode();
         }
     }

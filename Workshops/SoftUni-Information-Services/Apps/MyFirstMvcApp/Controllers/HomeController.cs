@@ -1,36 +1,41 @@
-﻿using MyFirstMvcApp.ViewModels;
+﻿using MyFirstMvcApp.Data;
 using SUS.HTTP;
 using SUS.MvcFramework;
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using MyFirstMvcApp.ViewModels;
+using MyFirstMvcApp.Data.EntityModels;
 
 namespace MyFirstMvcApp.Controllers
 {
     public class HomeController : Controller
     {
+        private protected readonly ApplicationDbContext db = new ApplicationDbContext();
+
         public HttpResponse Index()
         {
-            HomeViewModel viewModel = new HomeViewModel();
-            //Property data may come from Database/Services/Repositories or else;
-            viewModel.CurrentYear = DateTime.UtcNow.Year;
-            viewModel.Message = "WELCOME USER!";
+            //LoggedUserViewModel userViewModel = null;
 
-            if (this.IsUserSignedIn() == false)
+            if (this.IsUserSignedIn())
             {
-                viewModel.Message = "User is not logged in!";
+                string currentlyLoggedUserId = this.GetUserId();
+
+                User databaseUser = db.Users.FirstOrDefault(x => x.Id == currentlyLoggedUserId);
+
+                var userViewModel = new LoggedUserViewModel
+                {
+                    Username = databaseUser.Username,
+                    Email = databaseUser.Email
+                };
+
+                return this.View(userViewModel);
             }
 
-            return this.View(viewModel);
+            return this.View();
         }
 
         public HttpResponse About()
         {
-            List<int> viewModel = new List<int>
-            {
-                1,2,3,4,5
-            };
-
-            return this.View(viewModel);
+            return this.View();
         }
 
         public HttpResponse AutoLogin()
@@ -40,7 +45,7 @@ namespace MyFirstMvcApp.Controllers
                 return this.Error("User is already logged in"); ;
             }
 
-            this.SignIn("niki");
+            this.SignIn(db.Users.FirstOrDefault()?.Id);
 
             return this.Redirect("/home/index");
         }

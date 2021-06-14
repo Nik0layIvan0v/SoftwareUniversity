@@ -4,7 +4,7 @@ using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Data.EntityModels
 {
-    public class User : IdentityUser<string>
+    public class User //: IdentityUser<string>
     {
         public User()
         {
@@ -17,11 +17,14 @@ namespace MyFirstMvcApp.Data.EntityModels
 
         [Required]
         [MaxLength(250)]
-        public string FirstName { get; set; }
+        public string Username { get; set; }
 
         [Required]
         [MaxLength(250)]
-        public string LastName { get; set; }
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
 
         public string Description { get; set; }
 
