@@ -33,7 +33,17 @@ namespace MyFirstMvcApp.Controllers
 
         public HttpResponse About()
         {
-            return this.View();
+            string currentlyLoggedUserId = this.GetUserId();
+
+            User databaseUser = db.Users.FirstOrDefault(x => x.Id == currentlyLoggedUserId);
+
+            var userViewModel = new LoggedUserViewModel
+            {
+                Username = databaseUser.Username,
+                Email = databaseUser.Email
+            };
+
+            return this.View(userViewModel);
         }
     }
 }
