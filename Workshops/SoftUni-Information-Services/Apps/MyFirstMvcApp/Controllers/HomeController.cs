@@ -9,8 +9,14 @@ namespace MyFirstMvcApp.Controllers
 {
     public class HomeController : Controller
     {
-        private protected readonly ApplicationDbContext db = new ApplicationDbContext();
+        private protected readonly ApplicationDbContext db;
 
+        public HomeController(ApplicationDbContext dbContext)
+        {
+            this.db = dbContext;
+        }
+
+        [HttpGet("/")]
         public HttpResponse Index()
         {
             if (this.IsUserSignedIn())

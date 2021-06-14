@@ -9,7 +9,12 @@ namespace MyFirstMvcApp.Controllers
 {
     public class UsersController : Controller
     {
-        private protected readonly IUsersService UsersService = new UsersService();
+        private protected readonly IUsersService UsersService;
+
+        public UsersController(IUsersService usersService)
+        {
+            this.UsersService = usersService;
+        }
 
         public HttpResponse Register()
         {
@@ -49,7 +54,7 @@ namespace MyFirstMvcApp.Controllers
             UsersService.CreateUser(username, password, email);
 
             //TODO: Redirect Login page! - DONE!!!
-            return this.Redirect("/home/index");
+            return this.Redirect("/");
         }
 
         public HttpResponse Login()
@@ -81,7 +86,7 @@ namespace MyFirstMvcApp.Controllers
             this.SignIn(user.Id);
 
             //TODO: Redirect to Home page - DONE!!!
-            return this.Redirect("/home/index");
+            return this.Redirect("/");
         }
 
         public HttpResponse LogOut()
@@ -93,7 +98,7 @@ namespace MyFirstMvcApp.Controllers
 
             this.SignOut();
 
-            return this.Redirect("/home/index");
+            return this.Redirect("/");
         }
     }
 }
