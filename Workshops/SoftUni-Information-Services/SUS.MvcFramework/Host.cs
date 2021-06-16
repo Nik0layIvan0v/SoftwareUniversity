@@ -15,15 +15,17 @@ namespace SUS.MvcFramework
         {
             ICollection<Route> routes = new List<Route>();
 
+            IServiceCollection serviceCollection = new ServiceCollection();
+
             IMvcApplication application = Activator.CreateInstance<T>();
 
             await AutoMapStaticFiles(routes);
 
-            await AutoRegisterRoutes(routes, application);
-
-            application.ConfigureServices();
+            application.ConfigureServices(serviceCollection);
 
             application.Configure(routes);
+
+            await AutoRegisterRoutes(routes, application, serviceCollection);
 
             Console.WriteLine("All registered routes: ");
 
@@ -81,7 +83,7 @@ namespace SUS.MvcFramework
         /// <param name="routeTable">The route table</param>
         /// <param name="application">Current application</param>
         /// <returns>Task so CreateHostAsync to await the process</returns>
-        private static async Task AutoRegisterRoutes(ICollection<Route> routeTable, IMvcApplication application)
+        private static async Task AutoRegisterRoutes(ICollection<Route> routeTable, IMvcApplication application, IServiceCollection serviceCollection)
         {
             await Task.Run(() =>
             {
@@ -135,7 +137,7 @@ namespace SUS.MvcFramework
 
                         Func<HttpRequest, HttpResponse> controllerAction = (request) =>
                         {
-                            Controller instance = Activator.CreateInstance(controllerType) as Controller;
+                            var instance = serviceCollection.CreateInstance(controllerType) as Controller;
 
                             instance.HttpRequest = request;
 

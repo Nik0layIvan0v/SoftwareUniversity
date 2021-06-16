@@ -120,7 +120,10 @@ namespace SUS.HTTP
 
                     await stream.WriteAsync(responseHeaderBytes);
 
-                    await stream.WriteAsync(response.ResponseBody);
+                    if (response.ResponseBody != null)
+                    {
+                        await stream.WriteAsync(response.ResponseBody);
+                    }
                 }
 
                 tcpClient.Close();

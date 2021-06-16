@@ -15,7 +15,7 @@ namespace SUS.MvcFramework.ViewEngine
             this.errors = errors;
         }
 
-        public string GenerateHtml(object viewModel)
+        public string GenerateHtml(object viewModel, string user)
         {
             var html = new StringBuilder();
 

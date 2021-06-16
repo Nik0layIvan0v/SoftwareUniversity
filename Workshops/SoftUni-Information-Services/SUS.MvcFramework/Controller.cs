@@ -8,6 +8,8 @@ namespace SUS.MvcFramework
 {
     public abstract class Controller
     {
+        private const string UserIdSessionName = "UserId";
+
         protected Controller()
         {
             this.ViewEngine = new SusViewEngine();
@@ -23,7 +25,7 @@ namespace SUS.MvcFramework
 
             string viewContent = System.IO.File.ReadAllText($"Views/{controllerName}/{actionName}.cshtml");
 
-            viewContent = this.ViewEngine.GetHtml(viewContent, viewModel);
+            viewContent = this.ViewEngine.GetHtml(viewContent, viewModel, this.GetUserId());
 
             string combinationLayoutAndViewContent = this.PutViewInLayout(viewContent, viewModel);
 
@@ -38,13 +40,14 @@ namespace SUS.MvcFramework
 
             layout = layout.Replace("@RenderBody()", "___VIEW_GOES_HERE___");
 
-            layout = this.ViewEngine.GetHtml(layout, viewModel);
+            layout = this.ViewEngine.GetHtml(layout, viewModel, this.GetUserId());
 
             string combinationLayoutAndViewContent = layout.Replace("___VIEW_GOES_HERE___", viewContent);
 
             return combinationLayoutAndViewContent;
         }
-        public HttpResponse FileResponse(string filePath, string contentType)
+
+        protected HttpResponse FileResponse(string filePath, string contentType)
         {
             HttpResponse response = new HttpResponse(contentType, Array.Empty<byte>());
 
@@ -57,7 +60,7 @@ namespace SUS.MvcFramework
             return response;
         }
 
-        public HttpResponse Redirect(string url)
+        protected HttpResponse Redirect(string url)
         {
             var response = new HttpResponse(HttpStatusCode.Found);
 
@@ -71,7 +74,7 @@ namespace SUS.MvcFramework
         /// </summary>
         /// <param name="message">The message to show</param>
         /// <returns>HttpResponse with visual message for UI (for example on the layout)</returns>
-        public HttpResponse Error(string message)
+        protected HttpResponse Error(string message)
         {
             string alertError = $@"<div class=""alert alert-danger"" role=""alert"">{message}</div>";
 
@@ -81,5 +84,27 @@ namespace SUS.MvcFramework
 
             return new HttpResponse("text/html", dataBytes, HttpStatusCode.Unauthorized);
         }
+
+        protected void SignIn(string userId)
+        {
+            
+            this.HttpRequest.SessionData[UserIdSessionName] = userId;
+        }
+
+        protected void SignOut()
+        {
+            this.HttpRequest.SessionData[UserIdSessionName] = null;
+        }
+
+        protected bool IsUserSignedIn() =>
+            this.HttpRequest != null &&
+            this.HttpRequest.SessionData.ContainsKey(UserIdSessionName) &&
+            this.HttpRequest.SessionData[UserIdSessionName] != null;
+
+
+        protected string GetUserId() 
+            => this.IsUserSignedIn() 
+            ? this.HttpRequest.SessionData[UserIdSessionName]
+            : null;
     }
 }

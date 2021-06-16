@@ -9,9 +9,9 @@ namespace SUS.HTTP
     public class HttpRequest
     {
         /// <summary>
-        /// Stores all sessions ids from different browsers /users/
+        /// Stores all public sessions ids from different browsers /clients/ 
         /// </summary>
-        public static IDictionary<string,Dictionary<string,string>> Sessions = 
+        public static IDictionary<string, Dictionary<string, string>> Sessions =
             new Dictionary<string, Dictionary<string, string>>();
 
         public HttpRequest(string requestString)
@@ -103,7 +103,7 @@ namespace SUS.HTTP
                 this.SessionData = Sessions[sessionCookie.Value];
             }
 
-            this.RequestBody = bodyBuilder.ToString();
+            this.RequestBody = bodyBuilder.ToString().TrimEnd('\n', '\r');
 
             if (!string.IsNullOrEmpty(this.RequestBody))
             {
@@ -144,7 +144,10 @@ namespace SUS.HTTP
 
         public ICollection<Cookie> Cookies { get; set; }
 
-        public Dictionary<string,string> SessionData { get; set; }
+        /// <summary>
+        /// Holds sensitive information behind cookie like username/userid or else.
+        /// </summary>
+        public Dictionary<string, string> SessionData { get; set; }
 
         public IDictionary<string, string> FormData { get; set; }
 

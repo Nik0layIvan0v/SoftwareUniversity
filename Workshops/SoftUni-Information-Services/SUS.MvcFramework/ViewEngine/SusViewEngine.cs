@@ -13,10 +13,9 @@ namespace SUS.MvcFramework.ViewEngine
 {
     public class SusViewEngine : IViewEngine
     {
-        public string GetHtml(string templateCode, object viewModel)
+        public string GetHtml(string templateCode, object viewModel, string user)
         {
-            //TODO: Implement logic
-
+            
             //1. Get from Template Code only csharp part
             string csharpCode = GenerateCSharpFromTemplate(templateCode, viewModel);
 
@@ -24,7 +23,7 @@ namespace SUS.MvcFramework.ViewEngine
             IView executableObj = GenerateExecutableCode(csharpCode, viewModel);
 
             //4. Generated executable object call that method to generate actual ready HTML with filled data.
-            string readyHtml = executableObj.GenerateHtml(viewModel);
+            string readyHtml = executableObj.GenerateHtml(viewModel, user);
 
             //5.Return the readyHtml through GetHtml() of SusViewEngine
             return readyHtml;
@@ -68,8 +67,9 @@ namespace SUS.MvcFramework.ViewEngine
                                 {
                                     public class ViewClass : IView
                                     {
-                                         public string GenerateHtml(object viewModel)
+                                         public string GenerateHtml(object viewModel, string user)
                                          {
+                                            var User = user;
                                             var Model = viewModel as " + $"{typeOfModel};" + @"
 
                                             StringBuilder result = new StringBuilder();
@@ -169,7 +169,7 @@ namespace SUS.MvcFramework.ViewEngine
                 {
                     Type[] genericArguments = viewModel.GetType().GenericTypeArguments;
 
-                    foreach (Type argument in genericArguments)
+                    foreach (var argument in genericArguments)
                     {
                         compileResult = compileResult.AddReferences(MetadataReference.CreateFromFile(argument.Assembly.Location));
                     }
@@ -212,7 +212,7 @@ namespace SUS.MvcFramework.ViewEngine
 
                 var viewType = viewAssembly.GetType("ViewNamespace.ViewClass");
 
-                object? instance = Activator.CreateInstance(viewType);
+                object instance = Activator.CreateInstance(viewType);
 
                 return instance as IView;
             }
