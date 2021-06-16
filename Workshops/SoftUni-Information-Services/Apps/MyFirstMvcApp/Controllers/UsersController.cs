@@ -22,12 +22,12 @@ namespace MyFirstMvcApp.Controllers
         }
 
         [HttpPost("/users/register")]
-        public HttpResponse RegisterData()
+        public HttpResponse RegisterData(string username, string email, string password)
         {
             //TODO: Read Data - DONE!!!
-            string username = this.HttpRequest.FormData["Username"].ToLower();
-            string email = this.HttpRequest.FormData["Email"].ToLower();
-            string password = this.HttpRequest.FormData["Password"].Trim();
+            //string username = this.HttpRequest.FormData["Username"].ToLower(); <= Now is data bidden!
+            //string email = this.HttpRequest.FormData["Email"].ToLower();
+            //string password = this.HttpRequest.FormData["Password"].Trim();
 
             //TODO: Validate input from User
             if (email.Contains("@") == false)

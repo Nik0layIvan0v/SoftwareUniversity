@@ -45,8 +45,8 @@ namespace MyFirstMvcApp.Controllers
 
             var userViewModel = new LoggedUserViewModel
             {
-                Username = databaseUser.Username,
-                Email = databaseUser.Email
+                Username = databaseUser?.Username,
+                Email = databaseUser?.Email
             };
 
             return this.View(userViewModel);

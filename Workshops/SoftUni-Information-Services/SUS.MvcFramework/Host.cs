@@ -78,10 +78,11 @@ namespace SUS.MvcFramework
         }
 
         /// <summary>
-        /// Replace in Startup.cs: routeTable.Add(new Route("/login",new UsersController().LoginConfirmed, HttpMethod.Post)); to be automatic.
+        /// Replace in Startup.cs: routeTable.Add(new Route("/login",new UsersController().LoginConfirmed, HttpMethod.Post)); TO BE AUTOMATIC.
         /// </summary>
         /// <param name="routeTable">The route table</param>
         /// <param name="application">Current application</param>
+        /// <param name="serviceCollection">Collection of application registered Services</param>
         /// <returns>Task so CreateHostAsync to await the process</returns>
         private static async Task AutoRegisterRoutes(ICollection<Route> routeTable, IMvcApplication application, IServiceCollection serviceCollection)
         {
@@ -112,46 +113,71 @@ namespace SUS.MvcFramework
 
                     //Console.WriteLine("Controller Methods: ");
 
-                    foreach (var currentMethod in controllerMethods)
+                    foreach (var currentControllerMethod in controllerMethods)
                     {
                         string controller = controllerType.Name.Replace("Controller", string.Empty);
 
                         //By default
-                        string url = $"/{controller}/{currentMethod.Name}";
+                        string url = $"/{controller}/{currentControllerMethod.Name}";
 
-                        BaseHttpAttribute attribute = currentMethod
+                        BaseHttpAttribute attribute = currentControllerMethod
                                               .GetCustomAttributes()
                                               .FirstOrDefault
                                               (
                                                   a => a.GetType().IsSubclassOf(typeof(BaseHttpAttribute))
                                               ) as BaseHttpAttribute;
 
-                        //If attribute have url example: [httpPost("/")] url will be changed to "/" instead of "/{controller}/{currentMethod.Name}"
+                        //If attribute have url example: [httpPost("/")] url will be changed to "/" instead of "/{controller}/{controllerAction.Name}"
                         if (!string.IsNullOrEmpty(attribute?.Url))
                         {
                             url = attribute.Url;
                         }
 
                         //By default controller method is GET if there is no attribute. Otherwise will be attribute method.
-                        HttpMethod controllerMethod = attribute?.Method ?? HttpMethod.Get;
+                        HttpMethod controllerHttpMethod = attribute?.Method ?? HttpMethod.Get;
 
-                        Func<HttpRequest, HttpResponse> controllerAction = (request) =>
-                        {
-                            var instance = serviceCollection.CreateInstance(controllerType) as Controller;
+                        //Func<HttpRequest, HttpResponse> controllerAction = 
 
-                            instance.HttpRequest = request;
+                        routeTable.Add(new Route(
+                            url,
+                            request => ExecuteAction(request, serviceCollection, controllerType, currentControllerMethod),
+                            controllerHttpMethod));
 
-                            HttpResponse httpResponse = currentMethod.Invoke(instance, Array.Empty<object>()) as HttpResponse;
-
-                            return httpResponse;
-                        };
-
-                        routeTable.Add(new Route(url, controllerAction, controllerMethod));
-
-                        //Console.WriteLine($"- {currentMethod.Name}() HttpMethod: {controllerMethod} URL: {url} ");
+                        //Console.WriteLine($"- {controllerAction.Name}() HttpMethod: {controllerMethod} URL: {url} ");
                     }
                 }
             });
+        }
+
+        private static HttpResponse ExecuteAction(HttpRequest request, IServiceCollection serviceCollection, Type controllerType, MethodInfo controllerAction)
+        {
+            var instance = serviceCollection.CreateInstance(controllerType) as Controller;
+
+            instance.HttpRequest = request;
+
+            List<object> actionArgumentsValues = new List<object>();
+
+            ParameterInfo[] actionParameters = controllerAction.GetParameters(); //Will get all parameters in controller action EXAMPLE: Login(string username, string password) => [0]=>username , [1]=>password
+
+            foreach (var currentParameter in actionParameters)
+            {
+                var parameterValue = GetParameterFromRequest(request, currentParameter.Name);
+                actionArgumentsValues.Add(parameterValue);
+            }
+
+            HttpResponse httpResponse = controllerAction.Invoke(instance, actionArgumentsValues.ToArray()) as HttpResponse;
+
+            return httpResponse;
+        }
+
+        private static string GetParameterFromRequest(HttpRequest request, string parameterName)
+        {
+            if (request.FormData.ContainsKey(parameterName))
+            {
+                return request.FormData[parameterName];
+            }
+
+            return null;
         }
     }
 }

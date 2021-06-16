@@ -4,7 +4,7 @@ using SUS.MvcFramework;
 
 namespace MyFirstMvcApp.Data.EntityModels
 {
-    public class User //: IdentityUser<string>
+    public class User : IdentityUser<string>
     {
         public User()
         {

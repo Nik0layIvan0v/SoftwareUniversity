@@ -12,14 +12,14 @@ namespace SUS.HTTP
         /// Stores all public sessions ids from different browsers /clients/ 
         /// </summary>
         public static IDictionary<string, Dictionary<string, string>> Sessions =
-            new Dictionary<string, Dictionary<string, string>>();
+            new Dictionary<string, Dictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
 
         public HttpRequest(string requestString)
         {
             this.Headers = new List<Header>();
             this.Cookies = new List<Cookie>();
-            this.FormData = new Dictionary<string, string>();
-            this.SessionData = new Dictionary<string, string>();
+            this.FormData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            this.SessionData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
             string[] lines = requestString
                 .Split(HttpConstants.HttpNewLine, StringSplitOptions.None)
@@ -85,7 +85,7 @@ namespace SUS.HTTP
             {
                 string newSessionId = Guid.NewGuid().ToString();
 
-                this.SessionData = new Dictionary<string, string>();
+                this.SessionData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
                 Sessions.Add(newSessionId, this.SessionData);
 
@@ -94,7 +94,7 @@ namespace SUS.HTTP
             else if (!Sessions.ContainsKey(sessionCookie.Value))
             {
                 //If we stop server and then start it again and browser send last cookie.
-                this.SessionData = new Dictionary<string, string>();
+                this.SessionData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
                 Sessions.Add(sessionCookie.Value, this.SessionData);
             }

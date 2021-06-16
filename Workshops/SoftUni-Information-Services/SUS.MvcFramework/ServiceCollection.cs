@@ -8,7 +8,7 @@ namespace SUS.MvcFramework
     public class ServiceCollection : IServiceCollection
     {
         //Dependency container
-        private readonly Dictionary<Type, Type> DependencyDictionary = new Dictionary<Type, Type>();
+        private protected readonly Dictionary<Type, Type> DependencyDictionary = new Dictionary<Type, Type>();
         public void Add<TSource, TDestination>()
         {
             this.DependencyDictionary[typeof(TSource)] = typeof(TDestination);
