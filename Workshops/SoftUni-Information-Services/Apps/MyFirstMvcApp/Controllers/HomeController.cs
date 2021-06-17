@@ -4,6 +4,7 @@ using SUS.MvcFramework;
 using System.Linq;
 using MyFirstMvcApp.ViewModels;
 using MyFirstMvcApp.Data.EntityModels;
+using MyFirstMvcApp.ViewModels.Users;
 
 namespace MyFirstMvcApp.Controllers
 {

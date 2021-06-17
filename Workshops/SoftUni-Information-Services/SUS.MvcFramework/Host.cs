@@ -161,7 +161,28 @@ namespace SUS.MvcFramework
 
             foreach (var currentParameter in actionParameters)
             {
-                var parameterValue = GetParameterFromRequest(request, currentParameter.Name);
+                string httpParameterValue = GetParameterFromRequest(request, currentParameter.Name);
+
+                var parameterValue = Convert.ChangeType(httpParameterValue, currentParameter.ParameterType);
+
+                if (parameterValue == null && currentParameter.ParameterType != typeof(string))
+                {
+                    //Complex Type
+                    //1.Create instance of passed Parameter in the action.
+                    parameterValue = Activator.CreateInstance(currentParameter.ParameterType);
+
+                    //2.Get all properties of the passed object
+                    PropertyInfo[] instanceProperties = currentParameter.ParameterType.GetProperties();
+
+                    foreach (var currentProperty in instanceProperties)
+                    {
+                        string propertyHttpParameterValue = GetParameterFromRequest(request, currentProperty.Name);
+                        var propertyParameterValue = Convert.ChangeType(propertyHttpParameterValue, currentProperty.PropertyType);
+
+                        currentProperty.SetValue(parameterValue, propertyParameterValue);
+                    }
+                }
+
                 actionArgumentsValues.Add(parameterValue);
             }
 
@@ -172,9 +193,16 @@ namespace SUS.MvcFramework
 
         private static string GetParameterFromRequest(HttpRequest request, string parameterName)
         {
-            if (request.FormData.ContainsKey(parameterName))
+            parameterName = parameterName.ToLower();
+
+            if (request.FormData.Any(x=>x.Key.ToLower() == parameterName))
             {
-                return request.FormData[parameterName];
+                return request.FormData.FirstOrDefault(x=>x.Key == parameterName).Value;
+            }
+
+            if (request.QueryData.Any(x => x.Key.ToLower() == parameterName))
+            {
+                return request.QueryData.FirstOrDefault(x=>x.Key == parameterName).Value;
             }
 
             return null;

@@ -11,7 +11,7 @@ namespace SUS.HTTP
         /// <summary>
         /// Stores all public sessions ids from different browsers /clients/ 
         /// </summary>
-        public static IDictionary<string, Dictionary<string, string>> Sessions =
+        public static Dictionary<string, Dictionary<string, string>> Sessions =
             new Dictionary<string, Dictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
 
         public HttpRequest(string requestString)
@@ -20,6 +20,7 @@ namespace SUS.HTTP
             this.Cookies = new List<Cookie>();
             this.FormData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
             this.SessionData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            this.QueryData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
             string[] lines = requestString
                 .Split(HttpConstants.HttpNewLine, StringSplitOptions.None)
@@ -103,54 +104,89 @@ namespace SUS.HTTP
                 this.SessionData = Sessions[sessionCookie.Value];
             }
 
+            if (this.Path.Contains('?'))
+            {
+                var pathParts = this.Path.Split('?');
+                this.Path = pathParts[0];
+                this.QueryString = pathParts[1];
+                this.SplitParameters(QueryString, this.QueryData);
+            }
+            else
+            {
+                this.QueryString = string.Empty;
+            }
+
             this.RequestBody = bodyBuilder.ToString().TrimEnd('\n', '\r');
 
             if (!string.IsNullOrEmpty(this.RequestBody))
             {
-                ParseFormDataFromBody();
+                SplitParameters(this.RequestBody, this.FormData);
             }
         }
 
-        private void ParseFormDataFromBody()
+        private void SplitParameters(string parameters, IDictionary<string, string> output)
         {
             //TODO: May be validate user input from html form and escape special characters like = &...
-            //RAW DATA: firstName=testName&lastName=testName
+            //TODO: 
 
-            //==after split==> [0] => firstName=testName [1] => lastName=testName ...and so on
-            string[] bodyParameters = this.RequestBody.Split("&", StringSplitOptions.RemoveEmptyEntries);
+            string[] bodyParameters = parameters.Split("&", StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var parameter in bodyParameters)
             {
-                //==after split==> [0] => firstName [1] => testName ...and so on
                 string[] parameterParts = parameter.Split("=", 2);
 
                 string key = parameterParts[0];
                 string value = WebUtility.UrlDecode(parameterParts[1]);
 
-                if (!this.FormData.ContainsKey(key))
-                {
-                    this.FormData.Add(key, string.Empty);
-                }
+                //if (output.ContainsKey(key))
+                //{
+                //    output.Add(key, string.Empty);
+                //}
 
-                this.FormData[key] = value;
+                output[key] = value;
             }
         }
 
+        /// <summary>
+        /// Only path from URL => http:\\localhost:8080\users\userId?username=ivan STORES ONLY \Users part from url.
+        /// </summary>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Stores only query string from URL => http:\\localhost:8080\users\userId?username=ivan result: username=ivan
+        /// </summary>
+        public string QueryString { get; set; }
 
         public HttpMethod Method { get; set; }
 
+        /// <summary>
+        /// Stores All headers send from client browser.
+        /// </summary>
         public ICollection<Header> Headers { get; set; }
 
+        /// <summary>
+        /// Stores all cookies send from client browser.
+        /// </summary>
         public ICollection<Cookie> Cookies { get; set; }
 
         /// <summary>
         /// Holds sensitive information behind cookie like username/userid or else.
         /// </summary>
-        public Dictionary<string, string> SessionData { get; set; }
+        public Dictionary<string, string> SessionData { get; private set; }
 
-        public IDictionary<string, string> FormData { get; set; }
+        /// <summary>
+        /// Stores names and values from html form output (POST method)
+        /// </summary>
+        public IDictionary<string, string> FormData { get; private set; }
 
+        /// <summary>
+        /// Stores names and values from html form output (GET method)
+        /// </summary>
+        public IDictionary<string, string> QueryData { get; private set; }
+
+        /// <summary>
+        /// Stores output part from requests (html forms input)
+        /// </summary>
         public string RequestBody { get; set; }
     }
 }

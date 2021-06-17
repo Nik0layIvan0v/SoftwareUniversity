@@ -4,6 +4,7 @@ using MyFirstMvcApp.Services;
 using SUS.HTTP;
 using SUS.MvcFramework;
 using System.Linq;
+using MyFirstMvcApp.ViewModels.Users;
 
 namespace MyFirstMvcApp.Controllers
 {
@@ -22,36 +23,34 @@ namespace MyFirstMvcApp.Controllers
         }
 
         [HttpPost("/users/register")]
-        public HttpResponse RegisterData(string username, string email, string password)
+        public HttpResponse RegisterData(InputUserTestModel testRegisterModel)
         {
             //TODO: Read Data - DONE!!!
             //string username = this.HttpRequest.FormData["Username"].ToLower(); <= Now is data bidden!
-            //string email = this.HttpRequest.FormData["Email"].ToLower();
-            //string password = this.HttpRequest.FormData["Password"].Trim();
 
             //TODO: Validate input from User
-            if (email.Contains("@") == false)
+            if (testRegisterModel.Email.Contains("@") == false)
             {
                 return this.Error("Invalid Email!");
             }
 
-            if (UsersService.IsEmailAlreadyRegistered(email))
+            if (UsersService.IsEmailAlreadyRegistered(testRegisterModel.Email))
             {
                 return this.Error("Email is already taken!!");
             }
 
-            if (username.Length > 50 || UsersService.IsUserAlreadyRegistered(username))
+            if (testRegisterModel.Username.Length > 50 || UsersService.IsUserAlreadyRegistered(testRegisterModel.Username))
             {
                 return this.Error("Invalid UserName!");
             }
 
-            if (password.Length > 50)
-            {
-                return this.Error("Password is too long!");
-            }
+            //if (testRegisterModel.Password.Length > 50)
+            //{
+            //    return this.Error("Password is too long!");
+            //}
 
             //TODO: Register User
-            UsersService.CreateUser(username, password, email);
+            //UsersService.CreateUser(username, password, email);
 
             //TODO: Redirect Login page! - DONE!!!
             return this.Redirect("/");
@@ -63,7 +62,7 @@ namespace MyFirstMvcApp.Controllers
         }
 
         [HttpPost("/users/login")]
-        public HttpResponse LoginConfirmed()
+        public HttpResponse LoginConfirmed(string username, string password)
         {
             if (IsUserSignedIn() == true)
             {
@@ -71,8 +70,8 @@ namespace MyFirstMvcApp.Controllers
             }
 
             //TODO: Read Data - DONE!!!
-            string username = this.HttpRequest.FormData["Username"].ToLower();
-            string password = this.HttpRequest.FormData["Password"].Trim();
+            //string username = this.HttpRequest.FormData["Username"].ToLower();
+            //string password = this.HttpRequest.FormData["Password"].Trim();
 
             //TODO: Check User
             if (!UsersService.IsUserValid(username, password))
