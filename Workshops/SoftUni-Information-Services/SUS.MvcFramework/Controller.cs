@@ -10,6 +10,10 @@ namespace SUS.MvcFramework
     {
         private const string UserIdSessionName = "UserId";
 
+        private const string UserRole = "UserRole";
+
+        private const string UserName = "Username";
+
         protected Controller()
         {
             this.ViewEngine = new SusViewEngine();
@@ -25,7 +29,7 @@ namespace SUS.MvcFramework
 
             string viewContent = System.IO.File.ReadAllText($"Views/{controllerName}/{actionName}.cshtml");
 
-            viewContent = this.ViewEngine.GetHtml(viewContent, viewModel, this.GetUserId());
+            viewContent = this.ViewEngine.GetHtml(viewContent, viewModel, this.GetUserId(), this.GetUserRole(), this.GetUsername());
 
             string combinationLayoutAndViewContent = this.PutViewInLayout(viewContent, viewModel);
 
@@ -40,7 +44,7 @@ namespace SUS.MvcFramework
 
             layout = layout.Replace("@RenderBody()", "___VIEW_GOES_HERE___");
 
-            layout = this.ViewEngine.GetHtml(layout, viewModel, this.GetUserId());
+            layout = this.ViewEngine.GetHtml(layout, viewModel, this.GetUserId(), this.GetUserRole(), this.GetUsername());
 
             string combinationLayoutAndViewContent = layout.Replace("___VIEW_GOES_HERE___", viewContent);
 
@@ -85,15 +89,18 @@ namespace SUS.MvcFramework
             return new HttpResponse("text/html", dataBytes, HttpStatusCode.Unauthorized);
         }
 
-        protected void SignIn(string userId)
+        protected void SignIn(string userId, string userRole = "User", string username = null)
         {
-            
             this.HttpRequest.SessionData[UserIdSessionName] = userId;
+            this.HttpRequest.SessionData[UserRole] = userRole;
+            this.HttpRequest.SessionData[UserName] = username;
         }
 
         protected void SignOut()
         {
             this.HttpRequest.SessionData[UserIdSessionName] = null;
+            this.HttpRequest.SessionData[UserRole] = null;
+            this.HttpRequest.SessionData[UserName] = null;
         }
 
         protected bool IsUserSignedIn() =>
@@ -102,9 +109,19 @@ namespace SUS.MvcFramework
             this.HttpRequest.SessionData[UserIdSessionName] != null;
 
 
-        protected string GetUserId() 
-            => this.IsUserSignedIn() 
+        protected string GetUserId()
+            => this.IsUserSignedIn()
             ? this.HttpRequest.SessionData[UserIdSessionName]
             : null;
+
+        protected string GetUserRole()
+            => this.IsUserSignedIn()
+                ? this.HttpRequest.SessionData[UserRole]
+                : null;
+
+        protected string GetUsername()
+            => this.IsUserSignedIn()
+                ? this.HttpRequest.SessionData[UserName]
+                : null;
     }
 }

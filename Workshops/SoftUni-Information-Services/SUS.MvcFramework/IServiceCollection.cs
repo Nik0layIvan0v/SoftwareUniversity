@@ -6,6 +6,8 @@ namespace SUS.MvcFramework
     {
         void Add<TSource, TDestination>();
 
+        void Add<TSource>();
+
         object CreateInstance(Type obj);
     }
 }

@@ -14,11 +14,11 @@ namespace SUS.MvcFramework.ViewEngine
     // RAZOR VIEW ENGINE
     public class SusViewEngine : IViewEngine
     {
-        public string GetHtml(string templateCode, object viewModel, string user)
+        public string GetHtml(string templateCode, object viewModel, string user, string userRole, string username)
         {
             string csharpCode = GenerateCSharpFromTemplate(templateCode, viewModel);
             IView executableObject = GenerateExecutableCоde(csharpCode, viewModel);
-            string html = executableObject.GenerateHtml(viewModel, user);
+            string html = executableObject.GenerateHtml(viewModel, user, userRole, username);
             return html;
         }
 
@@ -51,8 +51,10 @@ namespace ViewNamespace
 {
     public class ViewClass : IView
     {
-        public string GenerateHtml(object viewModel, string user)
+        public string GenerateHtml(object viewModel, string user, string userRole, string username)
         {
+            var Username = username;
+            var UserRole = userRole;
             var User = user;
             var Model = viewModel as " + typeOfModel + @";
             var html = new StringBuilder();

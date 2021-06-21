@@ -15,6 +15,6 @@ namespace SUS.MvcFramework
         [MaxLength(250)]
         public string Email { get; set; }
 
-        public string Description { get; set; }
+        public IdentityRole Role { get; set; }
     }
 }

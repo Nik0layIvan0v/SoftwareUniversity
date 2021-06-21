@@ -27,8 +27,8 @@ namespace SUS.MvcFramework.Tests
             };
 
             IViewEngine susViewEngine = new SusViewEngine();
-
-            string actualResult = susViewEngine.GetHtml(templateCode, viewModel, null);
+            string userRole = "Admin";
+            string actualResult = susViewEngine.GetHtml(templateCode, viewModel, null, userRole, null);
 
             string expectedResult = File.ReadAllText($"ViewTests/{fileName}.Result.html");
 
@@ -45,7 +45,7 @@ namespace SUS.MvcFramework.Tests
                 .GetHtml(@"@foreach(var num in Model)
                 {
 <span>@num</span>
-                }", new List<int> { 1, 2, 3 } , null);
+                }", new List<int> { 1, 2, 3 } , null, null, null);
 
             var expectedResult = @"<span>1</span>
 <span>2</span>

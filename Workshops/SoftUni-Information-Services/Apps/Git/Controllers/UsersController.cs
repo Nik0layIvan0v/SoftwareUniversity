@@ -1,9 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using Git.Services;
+﻿using Git.Data.DataValidationConstants;
+using Git.Services.Users;
 using SUS.HTTP;
 using SUS.MvcFramework;
-using Git.Data.DataValidationConstants;
-using Git.Services.Users;
+using System.Text.RegularExpressions;
 
 namespace Git.Controllers
 {

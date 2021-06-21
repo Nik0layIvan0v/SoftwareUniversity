@@ -1,10 +1,9 @@
-﻿using MyFirstMvcApp.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
 using MyFirstMvcApp.Data;
+using MyFirstMvcApp.Services;
 using SUS.HTTP;
 using SUS.MvcFramework;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using MyFirstMvcApp.Services;
 
 namespace MyFirstMvcApp
 {

@@ -14,6 +14,11 @@ namespace SUS.MvcFramework
             this.DependencyDictionary[typeof(TSource)] = typeof(TDestination);
         }
 
+        public void Add<TSource>()
+        {
+            this.DependencyDictionary[typeof(TSource)] = typeof(TSource);
+        }
+
         public object CreateInstance(Type type)
         {
             //Todo: Implement this method!
