@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using SUS.HTTP;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SUS.MvcFramework
 {
@@ -174,9 +175,11 @@ namespace SUS.MvcFramework
                     //2.Get all properties of the passed object
                     PropertyInfo[] instanceProperties = currentParameter.ParameterType.GetProperties();
 
+                    var propertyHttpParameterValue = string.Empty;
+
                     foreach (var currentProperty in instanceProperties)
                     {
-                        string propertyHttpParameterValue = GetParameterFromRequest(request, currentProperty.Name);
+                        propertyHttpParameterValue = GetParameterFromRequest(request, currentProperty.Name);
                         var propertyParameterValue = Convert.ChangeType(propertyHttpParameterValue, currentProperty.PropertyType);
 
                         currentProperty.SetValue(parameterValue, propertyParameterValue);
@@ -185,7 +188,7 @@ namespace SUS.MvcFramework
 
                 actionArgumentsValues.Add(parameterValue);
             }
-
+            
             HttpResponse httpResponse = controllerAction.Invoke(instance, actionArgumentsValues.ToArray()) as HttpResponse;
 
             return httpResponse;
@@ -197,12 +200,12 @@ namespace SUS.MvcFramework
 
             if (request.FormData.Any(x=>x.Key.ToLower() == parameterName))
             {
-                return request.FormData.FirstOrDefault(x=>x.Key == parameterName).Value;
+                return request.FormData.FirstOrDefault(x=>x.Key.ToLower() == parameterName).Value;
             }
 
             if (request.QueryData.Any(x => x.Key.ToLower() == parameterName))
             {
-                return request.QueryData.FirstOrDefault(x=>x.Key == parameterName).Value;
+                return request.QueryData.FirstOrDefault(x=>x.Key.ToLower() == parameterName).Value;
             }
 
             return null;
