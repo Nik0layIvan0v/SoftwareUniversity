@@ -49,7 +49,7 @@ namespace CarShop.Services
 
         public bool IsUsernameAvailable(string username)
         {
-            return this.DbContext.Users.Any(user => user.Username == username);
+            return this.DbContext.Users.Any(user => user.Username.ToLower() == username.ToLower());
         }
 
         public static string GetHashedPassword(string input)

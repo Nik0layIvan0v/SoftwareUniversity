@@ -31,10 +31,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\Issues\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\SUS.MvcFramework\SUS.MvcFramework.csproj" />
   </ItemGroup>
 

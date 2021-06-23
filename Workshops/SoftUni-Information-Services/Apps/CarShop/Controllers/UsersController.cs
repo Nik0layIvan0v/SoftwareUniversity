@@ -4,7 +4,7 @@ using CarShop.ViewModels.Users;
 using SUS.HTTP;
 using SUS.MvcFramework;
 using System.Text.RegularExpressions;
-using static CarShop.Data.DataConstants.UsernameValidConstraints;
+using static CarShop.Data.DataConstants.DataConstants;
 
 namespace CarShop.Controllers
 {
@@ -65,11 +65,11 @@ namespace CarShop.Controllers
                 return this.Error("You are already logged in!");
             }
 
-            if (model.Username.Length < MinUsernameLength ||
+            if (model.Username.Length < UserMinUsernameLength ||
                 model.Username.Length > DefaultMaxLength ||
                 string.IsNullOrWhiteSpace(model.Username))
             {
-                return this.Error($"Username: {model.Username} is invalid! Required min length is {MinUsernameLength} characters and max length is {DefaultMaxLength} characters!");
+                return this.Error($"Username: {model.Username} is invalid! Required min length is {UserMinUsernameLength} characters and max length is {DefaultMaxLength} characters!");
             }
 
             if (this.Service.IsUsernameAvailable(model.Username))
@@ -77,7 +77,7 @@ namespace CarShop.Controllers
                 return this.Error($"Username: {model.Username} is already registered!");
             }
 
-            if (!Regex.IsMatch(model.Email, EmailRegex))
+            if (!Regex.IsMatch(model.Email, UserEmailRegularExpression))
             {
                 return this.Error($"Email: {model.Email} is not valid!");
             }
@@ -90,14 +90,19 @@ namespace CarShop.Controllers
                     $"invalid password! Password must be between {PasswordMinLength} and {DefaultMaxLength} length!");
             }
 
-            if (model.Password.All(x => x == ' '))
+            if (model.Password.Select(char.IsLetterOrDigit).Count() < PasswordMinLength)
             {
-                return this.Error($"The provided password cannot be only whitespaces!");
+                return this.Error($"The provided password cannot contain whitespaces!");
             }
 
             if (model.Password != model.ConfirmPassword)
             {
                 return this.Error($"Password and confirm password are different!");
+            }
+
+            if (model.UserType != UserTypeMechanic && model.UserType != UserTypeClient)
+            {
+                return this.Error($"User can be only {UserTypeMechanic} or {UserTypeClient}");
             }
 
             this.Service.Create(model);
@@ -107,6 +112,11 @@ namespace CarShop.Controllers
 
         public HttpResponse Logout()
         {
+            if (!this.IsUserSignedIn())
+            {
+                return this.Error("You are already logged out!");
+            }
+
             this.SignOut();
 
             return this.Redirect("/");

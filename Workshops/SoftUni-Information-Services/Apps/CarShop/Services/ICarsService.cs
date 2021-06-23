@@ -5,10 +5,10 @@ namespace CarShop.Services
 {
     public interface ICarsService
     {
-        List<CarViewModel> GetAllClientCarList(); // model?
+        List<CarViewModel> GetAllClientCarList(string ownerId);
 
-        List<CarViewModel> GetAllMechanicCarList(); // model?
+        List<CarViewModel> GetAllMechanicCarList();
 
-        void AddCar(AddCarInputModel model); // model?
+        void AddCar(AddCarInputModel model, string ownerId);
     }
 }
