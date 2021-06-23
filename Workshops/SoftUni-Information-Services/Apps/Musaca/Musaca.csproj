@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SUS.MvcFramework\SUS.MvcFramework.csproj" />
+    <ProjectReference Include="..\..\SUS.MvcFramework\SUS.MvcFramework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
