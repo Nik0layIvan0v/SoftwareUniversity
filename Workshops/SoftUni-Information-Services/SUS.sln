@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarShop", "Apps\CarShop\Car
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Musaca", "Apps\Musaca\Musaca.csproj", "{F19037A8-F9ED-44E5-9BFD-C227010182D3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleCards", "Apps\BattleCards\BattleCards.csproj", "{F41D6A99-2EE7-4B33-A437-7B55035AA80C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{F19037A8-F9ED-44E5-9BFD-C227010182D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F19037A8-F9ED-44E5-9BFD-C227010182D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F19037A8-F9ED-44E5-9BFD-C227010182D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F41D6A99-2EE7-4B33-A437-7B55035AA80C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F41D6A99-2EE7-4B33-A437-7B55035AA80C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F41D6A99-2EE7-4B33-A437-7B55035AA80C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F41D6A99-2EE7-4B33-A437-7B55035AA80C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{2004268D-F247-41F2-908A-D88F8DD92813} = {C9116D1D-8AAE-428C-8974-A349B71F3FDC}
 		{C89471C1-5557-4DAD-97FF-EC03FC232EC3} = {C9116D1D-8AAE-428C-8974-A349B71F3FDC}
 		{F19037A8-F9ED-44E5-9BFD-C227010182D3} = {C9116D1D-8AAE-428C-8974-A349B71F3FDC}
+		{F41D6A99-2EE7-4B33-A437-7B55035AA80C} = {C9116D1D-8AAE-428C-8974-A349B71F3FDC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C024815-A0A3-40AD-B21B-E46B856119E6}
